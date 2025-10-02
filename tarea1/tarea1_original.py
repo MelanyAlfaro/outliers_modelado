@@ -37,15 +37,15 @@ x_beta_sc = LpVariable("x_beta_sc", lowBound=0)  # beta sur a centro
 
 # [Variables Binarias]
 ## PRODUCTOS PRODUCIDOS EN PLANTA NORTE O SUR
-y_alpha_n = LpVariable("y_alpha_n", lowBound=0, upBound=1)  # alpha se produce en norte
-y_alpha_s = LpVariable("y_alpha_s", lowBound=0, upBound=1)  # alpha se produce en sur
-y_beta_n = LpVariable("y_beta_n", lowBound=0, upBound=1)  # beta se produce en norte
-y_beta_s = LpVariable("y_beta_s", lowBound=0, upBound=1)  # beta se produce en sur
+y_alpha_n = LpVariable("y_alpha_n", cat=LpBinary)  # alpha se produce en norte
+y_alpha_s = LpVariable("y_alpha_s", cat=LpBinary)  # alpha se produce en sur
+y_beta_n = LpVariable("y_beta_n", cat=LpBinary)  # beta se produce en norte
+y_beta_s = LpVariable("y_beta_s", cat=LpBinary)  # beta se produce en sur
 
 ## APERTURA DE BODEGAS
-y_e = LpVariable("y_e", lowBound=0, upBound=1)  # Se abre bodega del este
-y_o = LpVariable("y_o", lowBound=0, upBound=1)  # Se abre bodega del oeste
-y_c = LpVariable("y_c", lowBound=0, upBound=1)  # Se abre bodega del centro
+y_e = LpVariable("y_e", cat=LpBinary)  # Se abre bodega del este
+y_o = LpVariable("y_o", cat=LpBinary)  # Se abre bodega del oeste
+y_c = LpVariable("y_c", cat=LpBinary)  # Se abre bodega del centro
 
 # [Funcion Objetivo]
 problema += (
@@ -121,7 +121,7 @@ problema += x_beta_no + x_beta_so >= 30 * y_o, "Demanda bodega oeste para beta"
 problema += x_beta_nc + x_beta_sc >= 35 * y_c, "Demanda bodega centro para beta"
 
 ## RESTRICCIONES DE ACOPLAMIENTO
-M = 200  # Sujeto a cambios
+M = 150
 
 ### Plantas preparadas
 problema += (
@@ -160,5 +160,4 @@ problema += (
 )
 
 problema += y_e + y_o + y_c >= 2, "Al menos dos bodegas abiertas"
-
 resolver_problema(problema, "Problema Original")
