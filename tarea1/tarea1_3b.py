@@ -55,7 +55,7 @@ problema += (
     + 6 * (x_beta_ne + x_beta_no + x_beta_nc)
     + 7 * (x_beta_se + x_beta_so + x_beta_sc)
     # Costos de transporte
-    + 0.25 * x_alpha_ne
+    + 0.5 * x_alpha_ne
     + 3 * x_alpha_no
     + 4 * x_alpha_nc
     + 6 * x_alpha_se
