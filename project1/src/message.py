@@ -22,3 +22,6 @@ class Message:
 
     def send(self) -> None:
         self.rejected = False
+        
+    def get_in_sys_time(self) -> float:
+        return self.exit_time - self.arrival_time
