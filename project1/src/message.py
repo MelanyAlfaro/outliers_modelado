@@ -12,7 +12,7 @@ class Message:
         self.enqueue_time = enqueue_time
 
     def update_wait_time(self, service_start_time: float) -> None:
-        self.wait_time = service_start_time - self.enqueue_time
+        self.wait_time += service_start_time - self.enqueue_time
 
     def mark_departure(self, time: float) -> None:
         self.exit_time = time
