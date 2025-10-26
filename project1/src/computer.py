@@ -27,5 +27,5 @@ class Computer(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def generate_processing_time(self, message: Message) -> float:
+    def generate_processing_time() -> float:
         raise NotImplementedError
