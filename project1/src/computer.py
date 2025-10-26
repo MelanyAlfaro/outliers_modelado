@@ -50,6 +50,7 @@ class Computer(ABC):
             time=processing_end_time,
             type=self._get_end_processing_event_type(),
             message=message,
+            target=self.ID,
         )
         return end_processing_event
 

@@ -27,8 +27,9 @@ class MasterComputer(Computer):
         return max(0.0, time)
 
     def determine_message_outcome(self, now: float, message: Message) -> Event:
-        # Default outcome set as message sent to exterior
+        # Default outcome set as message sent to exterior, default target as None
         outcome_event_type = EventTypes.MASTER_SEND_MSG
+        target_computer = None
 
         # Calculate random number between 0 and 1
         message_return_rv = rd.random()
@@ -39,17 +40,21 @@ class MasterComputer(Computer):
             and message_return_rv <= PROB_RETURN_MSG_FROM_WORKER
         ):
             outcome_event_type = EventTypes.WORKER_RECEIVE_INT_MSG
+            target_computer = WORKER_COMPUTER
         elif (
             message.source == LAZY_COMPUTER
             and message_return_rv <= PROB_RETURN_MSG_FROM_LAZY
         ):
             outcome_event_type = EventTypes.LAZY_RECEIVE_INT_MSG
+            target_computer = LAZY_COMPUTER
 
         # Mark as not busy anymore
         self.busy = False
 
         # Return outcome event accordingly
-        return Event(time=now, type=outcome_event_type, message=message)
+        return Event(
+            time=now, type=outcome_event_type, message=message, target=target_computer
+        )
 
     def send_message(self):
         self.sent_messages += 1
