@@ -29,6 +29,10 @@ class Computer(ABC):
         return "busy" if self.busy else "free"
 
     def process_message(self, now: float) -> Event:
+        # Avoid popping if method is called while message queue is empty
+        if len(self.message_queue) == 0:
+            raise AssertionError("Message queue empty on process message call")
+
         # append() adds messages to the right, so we must popleft for queue behavior
         message = self.message_queue.popleft()
 
