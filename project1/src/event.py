@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Optional
 
-from .event_types import EventTypes
-from .message import Message
+from event_types import EventTypes
+from message import Message
 
 
 @dataclass(order=True)

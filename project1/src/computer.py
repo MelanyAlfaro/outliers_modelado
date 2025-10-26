@@ -1,8 +1,14 @@
 from abc import ABC, abstractmethod
 from collections import deque
 
-from .message import Message
-from .event import Event
+from message import Message
+from event import Event
+from event_types import EventTypes
+
+
+MASTER_COMPUTER = 1
+WORKER_COMPUTER = 2
+LAZY_COMPUTER = 3
 
 
 class Computer(ABC):
@@ -22,10 +28,40 @@ class Computer(ABC):
     def get_state(self) -> str:
         return "busy" if self.busy else "free"
 
-    @abstractmethod
     def process_message(self, now: float) -> Event:
+        # Avoid popping if method is called while message queue is empty
+        if len(self.message_queue) == 0:
+            raise AssertionError("Message queue empty on process message call")
+
+        # append() adds messages to the right, so we must popleft for queue behavior
+        message = self.message_queue.popleft()
+
+        # Mark self as busy
+        self.busy = True
+
+        # Mark new wait time
+        message.update_wait_time(service_start_time=now)
+
+        # Calculate processing time accordingly
+        processing_end_time = now + self.generate_processing_time()
+
+        # Create new event for process end
+        end_processing_event = Event(
+            time=processing_end_time,
+            type=self._get_end_processing_event_type(),
+            message=message,
+            target=self.ID,
+        )
+        return end_processing_event
+
+    @abstractmethod
+    def generate_processing_time(self) -> float:
         raise NotImplementedError
 
     @abstractmethod
-    def generate_processing_time(self, message: Message) -> float:
+    def _get_end_processing_event_type(self) -> EventTypes:
+        raise NotImplementedError
+
+    @abstractmethod
+    def determine_message_outcome(self, now: float, message: Message) -> Event:
         raise NotImplementedError

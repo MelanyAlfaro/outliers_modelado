@@ -10,12 +10,14 @@ class EventTypes(StrEnum):
     MASTER_RECEIVE_MSG = "master_receive_msg"
     MASTER_START_PROCESSING_MSG = "master_start_processing_msg"
     MASTER_END_PROCESSING_MSG = "master_end_processing_msg"
+    MASTER_SEND_MSG = "master_send_msg"
 
     # Lazy
     LAZY_RECEIVE_EXT_MSG = "lazy_receive_ext_msg"
     LAZY_RECEIVE_INT_MSG = "lazy_receive_int_msg"
     LAZY_START_PROCESSING_MSG = "lazy_start_processing_msg"
     LAZY_END_PROCESSING_MSG = "lazy_end_processing_msg"
+    LAZY_REJECT_MSG = "lazy_reject_msg"
 
     # Worker
     WORKER_RECEIVE_EXT_MSG = "worker_receive_ext_msg"
