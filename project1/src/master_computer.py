@@ -20,9 +20,11 @@ class MasterComputer(Computer):
         return EventTypes.MASTER_END_PROCESSING_MSG
 
     def generate_processing_time(self) -> float:
-        return rd.normalvariate(
+        time = rd.normalvariate(
             mu=self.process_time_mean, sigma=self.process_time_variance
         )
+        # Avoid returning a negative processing time
+        return max(0.0, time)
 
     def determine_message_outcome(self, now: float, message: Message) -> Event:
         # Default outcome set as message sent to exterior
