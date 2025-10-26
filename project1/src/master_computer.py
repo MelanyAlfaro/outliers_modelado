@@ -16,21 +16,8 @@ class MasterComputer(Computer):
         self.process_time_mean: float = 3.0
         self.process_time_variance: float = 1.0
 
-    def process_message(self, now: float) -> Event:
-        # append() adds messages to the right, so we must popleft for queue behavior
-        message = self.message_queue.popleft()
-        message.update_wait_time(service_start_time=now)
-
-        # Calculate processing time accordingly
-        processing_end_time = now + self.generate_processing_time()
-
-        # Create new event for process end
-        end_processing_event = Event(
-            time=processing_end_time,
-            type=EventTypes.MASTER_END_PROCESSING_MSG,
-            message=message,
-        )
-        return end_processing_event
+    def _get_end_processing_event_type(self) -> EventTypes:
+        return EventTypes.MASTER_END_PROCESSING_MSG
 
     def generate_processing_time(self) -> float:
         return rd.normalvariate(
@@ -45,10 +32,19 @@ class MasterComputer(Computer):
         message_return_rv = rd.random()
 
         # Determine whether to return message or not
-        if message.source == WORKER_COMPUTER and message_return_rv <= PROB_RETURN_MSG_FROM_WORKER:
+        if (
+            message.source == WORKER_COMPUTER
+            and message_return_rv <= PROB_RETURN_MSG_FROM_WORKER
+        ):
             outcome_event_type = EventTypes.WORKER_RECEIVE_INT_MSG
-        elif message.source == LAZY_COMPUTER and message_return_rv <= PROB_RETURN_MSG_FROM_LAZY:
+        elif (
+            message.source == LAZY_COMPUTER
+            and message_return_rv <= PROB_RETURN_MSG_FROM_LAZY
+        ):
             outcome_event_type = EventTypes.LAZY_RECEIVE_INT_MSG
+
+        # Mark as not busy anymore
+        self.busy = False
 
         # Return outcome event accordingly
         return Event(time=now, type=outcome_event_type, message=message)
