@@ -1,14 +1,17 @@
 import random as rd
 
-from computer import Computer
+from computer import Computer, MASTER_COMPUTER, WORKER_COMPUTER, LAZY_COMPUTER
 from message import Message
 from event import Event
 from event_types import EventTypes
 
+PROB_RETURN_MSG_FROM_LAZY = 0.5
+PROB_RETURN_MSG_FROM_WORKER = 0.2
+
 
 class MasterComputer(Computer):
-    def __init__(self, ID: int) -> None:
-        super().__init__(ID)
+    def __init__(self) -> None:
+        super().__init__(ID=MASTER_COMPUTER)
         self.sent_messages: int = 0
         self.process_time_mean: float = 3.0
         self.process_time_variance: float = 1.0
@@ -42,9 +45,9 @@ class MasterComputer(Computer):
         message_return_rv = rd.random()
 
         # Determine whether to return message or not
-        if message.source == 2 and message_return_rv <= 0.2:
+        if message.source == WORKER_COMPUTER and message_return_rv <= PROB_RETURN_MSG_FROM_WORKER:
             outcome_event_type = EventTypes.WORKER_RECEIVE_INT_MSG
-        elif message.source == 3 and message_return_rv <= 0.5:
+        elif message.source == LAZY_COMPUTER and message_return_rv <= PROB_RETURN_MSG_FROM_LAZY:
             outcome_event_type = EventTypes.LAZY_RECEIVE_INT_MSG
 
         # Return outcome event accordingly

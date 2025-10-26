@@ -4,6 +4,10 @@ from collections import deque
 from .message import Message
 from .event import Event
 
+MASTER_COMPUTER = 1
+WORKER_COMPUTER = 2
+LAZY_COMPUTER = 3
+
 
 class Computer(ABC):
     def __init__(self, ID: int) -> None:
