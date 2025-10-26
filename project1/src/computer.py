@@ -50,11 +50,11 @@ class Computer(ABC):
         return end_processing_event
 
     @abstractmethod
-    def generate_processing_time() -> float:
+    def generate_processing_time(self) -> float:
         raise NotImplementedError
 
     @abstractmethod
-    def _get_end_processing_event_type() -> EventTypes:
+    def _get_end_processing_event_type(self) -> EventTypes:
         raise NotImplementedError
 
     @abstractmethod
