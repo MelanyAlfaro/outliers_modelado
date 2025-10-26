@@ -30,7 +30,7 @@ class WorkerComputer(Computer):
         and an empty received_messages counter.
         """
         super().__init__(ID=WORKER_COMPUTER)
-        self.received_messages: int= 0
+        self.received_messages: int = 0
         self.process_time_min: float = 5.0
         self.process_time_max: float = 10.0
 
@@ -73,6 +73,6 @@ class WorkerComputer(Computer):
             target=MASTER_COMPUTER,
         )
 
-    def receive_message(self):
+    def receive_message(self) -> None:
         """Increase the number of messages received by the worker computer."""
         self.received_messages += 1
