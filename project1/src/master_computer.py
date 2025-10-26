@@ -68,6 +68,6 @@ class MasterComputer(Computer):
             time=now, type=outcome_event_type, message=message, target=target_computer
         )
 
-    def send_message(self):
+    def send_message(self) -> None:
         """Increase the number of messages sent by the master."""
         self.sent_messages += 1
