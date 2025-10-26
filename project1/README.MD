@@ -103,7 +103,7 @@ project_root/
 
 ## 🧭 Design Documentation
 The detailed design process, models, and diagrams are documented in the  
-[Design README](design/README.md).
+[Design README](design/DESIGN.md).
 
 ---
 
