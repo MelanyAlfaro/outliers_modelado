@@ -1,6 +1,6 @@
 import random as rd
 
-from computer import Computer, MASTER_COMPUTER, WORKER_COMPUTER, LAZY_COMPUTER
+from computer import Computer, MASTER_COMPUTER, WORKER_COMPUTER
 from message import Message
 from event import Event
 from event_types import EventTypes
@@ -30,7 +30,7 @@ class WorkerComputer(Computer):
         and an empty received_messages counter.
         """
         super().__init__(ID=WORKER_COMPUTER)
-        self.received_messages = 0
+        self.received_messages: int= 0
         self.process_time_min: float = 5.0
         self.process_time_max: float = 10.0
 
