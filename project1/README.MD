@@ -40,9 +40,8 @@ The system simulates three computers with the following roles:
 - **Computer 3**: Receives external messages with *triangularly distributed* interarrival times (between 2 and 10 seconds).  
   - 75% of the messages are rejected permanently.  
   - Processing times follow the distribution:  
-   $$
-    f(x) = \frac{3x^2}{98}, \quad 3 \le x \le 5
-  $$
+  Processing times follow the distribution:  
+  ![f(x) = 3x²/98, 3 ≤ x ≤ 5](https://latex.codecogs.com/png.image?%5Cdpi%7B120%7D%20f(x)%20%3D%20%5Cfrac%7B3x%5E2%7D%7B98%7D%2C%20%5Cquad%203%20%5Cle%20x%20%5Cle%205)
 
   - Of the accepted messages, 50% of those sent to Computer 1 are returned for reprocessing.
 
