@@ -33,7 +33,9 @@ class MasterComputer(Computer):
 
         Ensures the returned time is never negative.
         """
-        time = rd.normalvariate(mu=self.process_time_mean, sigma=self.process_time_variance)
+        time = rd.normalvariate(
+            mu=self.process_time_mean, sigma=self.process_time_variance
+        )
         return max(0.0, time)
 
     def determine_message_outcome(self, now: float, message: Message) -> Event:
@@ -48,15 +50,23 @@ class MasterComputer(Computer):
         target_computer = None
         message_return_rv = rd.random()
 
-        if message.source == WORKER_COMPUTER and message_return_rv <= PROB_RETURN_MSG_FROM_WORKER:
+        if (
+            message.source == WORKER_COMPUTER
+            and message_return_rv <= PROB_RETURN_MSG_FROM_WORKER
+        ):
             outcome_event_type = EventTypes.WORKER_RECEIVE_INT_MSG
             target_computer = WORKER_COMPUTER
-        elif message.source == LAZY_COMPUTER and message_return_rv <= PROB_RETURN_MSG_FROM_LAZY:
+        elif (
+            message.source == LAZY_COMPUTER
+            and message_return_rv <= PROB_RETURN_MSG_FROM_LAZY
+        ):
             outcome_event_type = EventTypes.LAZY_RECEIVE_INT_MSG
             target_computer = LAZY_COMPUTER
 
         self.busy = False
-        return Event(time=now, type=outcome_event_type, message=message, target=target_computer)
+        return Event(
+            time=now, type=outcome_event_type, message=message, target=target_computer
+        )
 
     def send_message(self):
         """Increase the number of messages sent by the master."""
