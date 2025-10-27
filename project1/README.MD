@@ -93,7 +93,7 @@ project_root/
 |   └── worker_computer.py
 |   └── lazy_computer.py
 |   └── simulator.py
-|   └── stats_collector
+|   └── stats_collector.py
 ├── design/                 # Design documents
 │   └── README.md           # Design README (see below)
 └── README.md               # This file
