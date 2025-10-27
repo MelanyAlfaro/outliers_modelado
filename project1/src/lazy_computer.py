@@ -32,7 +32,7 @@ class LazyComputer(Computer):
         super().__init__(ID=LAZY_COMPUTER)
         self.received_messages: int = 0
         self.rejected_messages: int = 0
-        
+
     def processing_time_function(self, x: float) -> float:
         """
         Distribution used to get a result with a given value (used for comparisons).
@@ -61,7 +61,7 @@ class LazyComputer(Computer):
             x = lower_bound + (upper_bound - lower_bound) * r1
             if r2 <= self.processing_time_function(x) / M:
                 return x
-            
+
     def _get_end_processing_event_type(self) -> EventTypes:
         """
         Get the event type corresponding to the completion of message processing.
@@ -78,7 +78,7 @@ class LazyComputer(Computer):
         The lazy computer may:
         - Reject the message and delete it from the system.
         - Send it to the master computer.
-        
+
         Args:
             now (float): Current simulation time in seconds.
             message (Message): The message that has just been processed.
@@ -96,7 +96,9 @@ class LazyComputer(Computer):
             target_computer = MASTER_COMPUTER
 
         self.busy = False
-        return Event(time=now, type=outcome_event_type, message=message, target=target_computer)
+        return Event(
+            time=now, type=outcome_event_type, message=message, target=target_computer
+        )
 
     def receive_message(self) -> None:
         """Increase the number of messages received by the lazy computer."""
