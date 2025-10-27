@@ -58,9 +58,9 @@ class LazyComputer(Computer):
         while True:
             r1 = rd.random()
             r2 = rd.random()
-            x = lower_bound + (upper_bound - lower_bound) * r1
-            if r2 <= self.processing_time_function(x) / M:
-                return x
+            processing_time = lower_bound + (upper_bound - lower_bound) * r1
+            if r2 <= self.processing_time_function(processing_time) / M:
+                return processing_time
 
     def _get_end_processing_event_type(self) -> EventTypes:
         """
