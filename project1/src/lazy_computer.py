@@ -33,7 +33,8 @@ class LazyComputer(Computer):
         self.received_messages: int = 0
         self.rejected_messages: int = 0
 
-    def processing_time_function(self, x: float) -> float:
+    @staticmethod
+    def processing_time_function(x: float) -> float:
         """
         Distribution used to get a result with a given value (used for comparisons).
 
