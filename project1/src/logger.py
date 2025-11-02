@@ -2,9 +2,6 @@ import time
 
 from event_types import EventTypes
 from computer import Computer
-from master_computer import MasterComputer
-from worker_computer import WorkerComputer
-from lazy_computer import LazyComputer
 
 
 class Logger:
@@ -24,9 +21,9 @@ class Logger:
         self,
         current_time: float,
         event_type: EventTypes,
-        worker_computer: WorkerComputer,
-        master_computer: MasterComputer,
-        lazy_computer: LazyComputer,
+        worker_computer: Computer,
+        master_computer: Computer,
+        lazy_computer: Computer,
         sim_number: int,
         speed: str = "fast",
     ) -> None:
@@ -59,12 +56,8 @@ class Logger:
 
         # --- Message queues ---
         print(f"Master queue (C1): {master_computer.get_enqueued_messages()} messages")
-        print(
-            f"Worker queue (C2): {worker_computer.message_queue.get_enqueued_messages()} messages"
-        )
-        print(
-            f"Lazy queue (C3): {lazy_computer.message_queue.get_enqueued_messages()=} messages"
-        )
+        print(f"Worker queue (C2): {worker_computer.get_enqueued_messages()} messages")
+        print(f"Lazy queue (C3): {lazy_computer.get_enqueued_messages()} messages")
 
         # --- Processor states ---
         print(f"Master (C1) state: {master_computer.get_state()}")
