@@ -17,8 +17,8 @@ class Logger:
     """
 
     def __init__(self, delay: float, max_sim_count: int) -> None:
-        self.delay = delay
-        self.max_sim_count = max_sim_count
+        self.delay: float = delay
+        self.max_sim_count: int = max_sim_count
 
     def log_event(
         self,
