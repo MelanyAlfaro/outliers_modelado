@@ -26,7 +26,7 @@ class Computer(ABC):
         return len(self.message_queue)
 
     def get_state(self) -> str:
-        return "busy" if self.busy else "free"
+        return "Busy" if self.busy else "Idle"
 
     def process_message(self, now: float) -> Event:
         # Avoid popping if method is called while message queue is empty

@@ -20,19 +20,6 @@ class Logger:
         self.delay = delay
         self.max_sim_count = max_sim_count
 
-    def state(self, computer: Computer) -> str:
-        """
-        Returns the current processing state of the given computer.
-
-        Parameters:
-        computer :The computer instance whose state is being checked.
-
-        Returns:
-        str: "Busy" if the computer is currently processing a message,
-            otherwise "Idle".
-        """
-        return "Busy" if computer.busy else "Idle"
-
     def log_event(
         self,
         current_time: float,
@@ -76,9 +63,9 @@ class Logger:
         print(f"Lazy queue (C3): {len(lazy_computer.message_queue)} messages")
 
         # --- Processor states ---
-        print(f"Master (C1) state: {self.state(master_computer)}")
-        print(f"Worker (C2) state: {self.state(worker_computer)}")
-        print(f"Lazy (C3) state: {self.state(lazy_computer)}")
+        print(f"Master (C1) state: {master_computer.get_state()}")
+        print(f"Worker (C2) state: {worker_computer.get_state()}")
+        print(f"Lazy (C3) state: {lazy_computer.get_state()}")
 
         # --- Real-time statistics ---
         print("-" * 70)
