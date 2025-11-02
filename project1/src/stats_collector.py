@@ -24,12 +24,19 @@ class StatsCollector:
 
     def get_messages_statistics(
         self,
-    ) -> tuple[tuple[float, ...], tuple[float, ...], tuple[float, ...]]:
-        avg_wait_times = self.get_msgs_avg_wait_time()
-        avg_in_sys_times = self.get_msgs_avg_in_sys_time()
+    ) -> tuple[list[float], list[float], list[float]]:
+        avg_wait_times = list(self.get_msgs_avg_wait_time())
+        avg_in_sys_times = list(self.get_msgs_avg_in_sys_time())
         assert len(avg_wait_times) == len(avg_in_sys_times)
 
-        efficiency_coefficients = tuple(
+        # Get overall averages
+        total_avg_wait_time, total_avg_in_sys_time = self.get_overall_avg_times()
+
+        # Append them to the lists
+        avg_wait_times.append(total_avg_wait_time)
+        avg_in_sys_times.append(total_avg_in_sys_time)
+
+        efficiency_coefficients = list(
             wait_time / in_sys_time
             for wait_time, in_sys_time in zip(avg_wait_times, avg_in_sys_times)
             if in_sys_time and in_sys_time > 0
@@ -48,6 +55,28 @@ class StatsCollector:
         if message_list:
             return mean(message.get_in_sys_time() for message in message_list)
         return None
+
+    def get_overall_avg_times(self) -> float:
+        total_in_sys_time = 0.0
+        total_wait_time = 0.0
+        total_count = 0
+
+        for message_type in (
+            MessageType.REJECTED_MSG,
+            MessageType.SENT_MSG_FROM_WORKER,
+            MessageType.SENT_MSG_FROM_LAZY,
+        ):
+            message_list = self.messages_dict.get(message_type, [])
+            total_in_sys_time += sum(
+                message.get_in_sys_time() for message in message_list
+            )
+            total_wait_time += sum(message.wait_time for message in message_list)
+            total_count += len(message_list)
+        total_avg_in_sys_time = (
+            total_in_sys_time / total_count if total_count > 0 else None
+        )
+        total_avg_wait_time = total_wait_time / total_count if total_count > 0 else None
+        return total_avg_wait_time, total_avg_in_sys_time
 
     def get_msgs_avg_wait_time(self) -> tuple[float, float, float]:
         return (
