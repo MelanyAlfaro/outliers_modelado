@@ -28,6 +28,7 @@ class StatsCollector:
         avg_wait_times = self.get_msgs_avg_wait_time()
         avg_in_sys_times = self.get_msgs_avg_in_sys_time()
         assert len(avg_wait_times) == len(avg_in_sys_times)
+
         efficiency_coefficients = tuple(
             wait_time / in_sys_time
             for wait_time, in_sys_time in zip(avg_wait_times, avg_in_sys_times)
@@ -61,21 +62,26 @@ class StatsCollector:
             return mean(message.wait_time for message in message_list)
         return None
 
+    # Computer times statistics
     def add_joint_work_time(self, duration: float) -> None:
         self.joint_work_time += duration
 
-    def get_avg_busy_times(
-        self, computers: list[Computer]
-    ) -> tuple[float, float, float]:
-        pass
+    def get_computers_statistics(
+        self, computers: list[Computer], sim_end_time: float
+    ) -> tuple[tuple[float, ...], tuple[float, ...], float, float]:
+        avg_busy_times = tuple(computer.busy_time for computer in computers)
+        perc_busy_times = tuple(
+            (computer.busy_time / computer.end_time) if computer.end_time > 0 else 0.0
+            for computer in computers
+        )
 
-    def get_busy_times_percentage(
-        self, computers: list[Computer]
-    ) -> tuple[float, float, float]:
-        pass
+        perc_joint_work_time = (
+            self.joint_work_time / sim_end_time if sim_end_time > 0.0 else 0.0
+        )
 
-    def get_avg_joint_work_time(self) -> float:
-        pass
-
-    def get_joint_work_time_percentage(self, total_sim_time: float) -> float:
-        pass
+        return (
+            avg_busy_times,
+            perc_busy_times,
+            self.joint_work_time,
+            perc_joint_work_time,
+        )
