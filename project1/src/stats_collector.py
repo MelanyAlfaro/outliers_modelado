@@ -3,7 +3,7 @@ from typing import Tuple
 from statistics import mean
 
 from message import Message
-from computer import Computer, MASTER_COMPUTER, WORKER_COMPUTER, LAZY_COMPUTER
+from computer import Computer, WORKER_COMPUTER, LAZY_COMPUTER
 from message_type import MessageType
 
 
