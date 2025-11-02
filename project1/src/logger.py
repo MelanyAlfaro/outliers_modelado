@@ -34,7 +34,7 @@ class Logger:
         Displays the current state of the system during a simulation event.
 
         Parameters:
-        current_time :Current simulation clock time (in seconds).
+        current_time : Current simulation clock time (in seconds).
         event_type : The type of event that occurred (e.g., message arrival,
                     processing completion).
         worker_computer : Reference to the Worker computer (C2).
