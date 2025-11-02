@@ -195,6 +195,11 @@ class StatsCollector:
         """Return statistics for the most recent iteration, or None if no iterations recorded."""
         return self.iteration_records[-1] if self.iteration_records else None
 
+    def clear_iteration_records(self) -> None:
+        """Clears by-iteration records so new iteration's data can be recorded"""
+        self.messages_dict.clear()
+        self.joint_work_time = 0.0
+
     # === Final aggregated statistics ===
     def get_final_statistics(self) -> dict[str, list[float]] | None:
         """
