@@ -84,12 +84,14 @@ class StatsCollector:
             self._get_avg_in_sys_time_for(MessageType.SENT_MSG_FROM_LAZY),
         )
 
-    def _get_avg_in_sys_time_for(self, message_type: MessageType) -> float:
+    def _get_avg_in_sys_time_for(self, message_type: MessageType) -> float | None:
         """Helper: compute average in-system time for a specific message type."""
         message_list = self.messages_dict.get(message_type, [])
-        if message_list:
-            return mean(message.get_in_sys_time() for message in message_list)
-        return None
+        return (
+            mean(message.get_in_sys_time() for message in message_list)
+            if message_list
+            else None
+        )
 
     def _get_overall_avg_times(self) -> Tuple[float, float]:
         """
@@ -128,12 +130,14 @@ class StatsCollector:
             self._get_avg_wait_time_for(MessageType.SENT_MSG_FROM_LAZY),
         )
 
-    def _get_avg_wait_time_for(self, message_type: MessageType) -> float:
+    def _get_avg_wait_time_for(self, message_type: MessageType) -> float | None:
         """Helper: compute average wait time for a specific message type."""
         message_list = self.messages_dict.get(message_type, [])
-        if message_list:
-            return mean(message.wait_time for message in message_list)
-        return None
+        return (
+            mean(message.wait_time for message in message_list)
+            if message_list
+            else None
+        )
 
     # === Computer statistics ===
     def add_joint_work_time(self, duration: float) -> None:
