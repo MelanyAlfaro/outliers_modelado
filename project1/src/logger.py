@@ -16,7 +16,7 @@ class Logger:
         max_sim_count (int): Maximum number of simulation iterations.
     """
 
-    def __init__(self, delay: float, max_sim_count: int):
+    def __init__(self, delay: float, max_sim_count: int) -> None:
         self.delay = delay
         self.max_sim_count = max_sim_count
 
@@ -58,9 +58,13 @@ class Logger:
         print("-" * 70)
 
         # --- Message queues ---
-        print(f"Master queue (C1): {len(master_computer.message_queue)} messages")
-        print(f"Worker queue (C2): {len(worker_computer.message_queue)} messages")
-        print(f"Lazy queue (C3): {len(lazy_computer.message_queue)} messages")
+        print(f"Master queue (C1): {master_computer.get_enqueued_messages()} messages")
+        print(
+            f"Worker queue (C2): {worker_computer.message_queue.get_enqueued_messages()} messages"
+        )
+        print(
+            f"Lazy queue (C3): {lazy_computer.message_queue.get_enqueued_messages()=} messages"
+        )
 
         # --- Processor states ---
         print(f"Master (C1) state: {master_computer.get_state()}")
