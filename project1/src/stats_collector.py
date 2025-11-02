@@ -22,7 +22,7 @@ class StatsCollector:
 
     def __init__(self) -> None:
         # Dictionary mapping message types to lists of Message objects
-        self.messages_dict: dict[MessageType, list[Message]] = defaultdict(list)
+        self.messages_by_type: dict[MessageType, list[Message]] = defaultdict(list)
 
         # Accumulated time when computers are working together
         self.joint_work_time: float = 0.0
@@ -47,7 +47,7 @@ class StatsCollector:
             # Safety check: message doesn't match known types
             raise AssertionError("Message does not fit with types")
 
-        self.messages_dict[message_type].append(message)
+        self.messages_by_type[message_type].append(message)
 
     # === Message statistics ===
     def _get_messages_statistics(self) -> Tuple[list[float], list[float], list[float]]:
@@ -86,7 +86,7 @@ class StatsCollector:
 
     def _get_avg_in_sys_time_for(self, message_type: MessageType) -> float | None:
         """Helper: compute average in-system time for a specific message type."""
-        message_list = self.messages_dict.get(message_type, [])
+        message_list = self.messages_by_type.get(message_type, [])
         return (
             mean(message.get_in_sys_time() for message in message_list)
             if message_list
@@ -106,7 +106,7 @@ class StatsCollector:
             MessageType.SENT_MSG_FROM_WORKER,
             MessageType.SENT_MSG_FROM_LAZY,
         ):
-            message_list = self.messages_dict.get(message_type, [])
+            message_list = self.messages_by_type.get(message_type, [])
             total_in_sys_time += sum(
                 message.get_in_sys_time() for message in message_list
             )
@@ -132,7 +132,7 @@ class StatsCollector:
 
     def _get_avg_wait_time_for(self, message_type: MessageType) -> float | None:
         """Helper: compute average wait time for a specific message type."""
-        message_list = self.messages_dict.get(message_type, [])
+        message_list = self.messages_by_type.get(message_type, [])
         return (
             mean(message.wait_time for message in message_list)
             if message_list
@@ -201,7 +201,7 @@ class StatsCollector:
 
     def clear_iteration_records(self) -> None:
         """Clears by-iteration records so new iteration's data can be recorded"""
-        self.messages_dict.clear()
+        self.messages_by_type.clear()
         self.joint_work_time = 0.0
 
     # === Final aggregated statistics ===
