@@ -84,13 +84,13 @@ class StatsCollector:
             self._get_avg_in_sys_time_for(MessageType.SENT_MSG_FROM_LAZY),
         )
 
-    def _get_avg_in_sys_time_for(self, message_type: MessageType) -> float | None:
+    def _get_avg_in_sys_time_for(self, message_type: MessageType) -> float:
         """Helper: compute average in-system time for a specific message type."""
         message_list = self.messages_by_type.get(message_type, [])
         return (
             mean(message.get_in_sys_time() for message in message_list)
-            if message_list
-            else None
+            if message_list or len(message_list) > 0
+            else 0.0
         )
 
     def _get_overall_avg_times(self) -> Tuple[float, float]:
@@ -130,13 +130,13 @@ class StatsCollector:
             self._get_avg_wait_time_for(MessageType.SENT_MSG_FROM_LAZY),
         )
 
-    def _get_avg_wait_time_for(self, message_type: MessageType) -> float | None:
+    def _get_avg_wait_time_for(self, message_type: MessageType) -> float:
         """Helper: compute average wait time for a specific message type."""
         message_list = self.messages_by_type.get(message_type, [])
         return (
             mean(message.wait_time for message in message_list)
-            if message_list
-            else None
+            if message_list or len(message_list) > 0
+            else 0.0
         )
 
     # === Computer statistics ===
