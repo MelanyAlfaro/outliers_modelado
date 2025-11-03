@@ -17,7 +17,14 @@ class Simulator():
     master = MasterComputer()
     worker = WorkerComputer()
     lazy = LazyComputer()
-    computers = [None, master, worker, lazy]
+    // before: computers = [None, master, worker, lazy]
+    // with a dictionary and think about the new enum:
+    computers = {
+    ComputerID.MASTER: master,
+    ComputerID.WORKER: worker,
+    ComputerID.LAZY: lazy
+    }
+
     stats = SimulationStats()
     logger = Logger()
     schedule(Event(clock, EventTypes.SIMULATION_START))
@@ -65,6 +72,7 @@ class Simulator():
             //  If not busy we schedule a new message 
             if not target_computer.busy:
                 schedule(Event(clock, target_computer.get_start_processing_event_type(), event.message, event.target))
+                mark enqueue time on message 
             if (EventTypes.WORKER_RECEIVE_EXT_MSG):
               schedule(gen_msg_arrival_worker())
             if ( EventTypes.LAZY_RECEIVE_EXT_MSG):
@@ -103,15 +111,14 @@ class Simulator():
               mark arrival time on message
             if not target_computer.busy:
                 schedule(Event(clock, target_computer._get_start_processing_event_type(), event.message, event.target))
-
+              mark enqueue time on message 
         elif event.type == EventTypes.LAZY_REJECT_MSG:
             computer.reject_message()
             mark exit time on message
+            pass the message to the stats collector
 
     def gen_msg_arrival_worker():
 
     def gen_msg_arrival_lazy():
-
-    def get_next_event():
 
 end
