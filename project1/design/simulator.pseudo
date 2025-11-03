@@ -4,7 +4,7 @@ class Simulator():
     sim_count : int
     max_sim_count: int
     max_time : float
-    event_list : [] // (usar import heapq)
+    event_queue : [] // (usar import heapq)
     stats: StatsCollerctor
     // Vector de computadoras xd 
     computers [Computer]
@@ -33,21 +33,21 @@ class Simulator():
       initialize_sim()
       // Somebody please check if this works !!!!
       while not event_list.is_empty :
-        run_iteration()
+        run_iteration
       end while
         handle (Quiere ver las estadísticas para al sim_count iteración)
     end while
     print(Quiere ver las estadísticas globales)
 
   def run_iteration():
-        schedule(gen_msg_arrival_worker())
-        schedule(gen_msg_arrival_lazy())
         event = get_next_event()
         clock = event.time
 
-        if event.type == EventTypes.SIMULATION_START || event.type == EventTypes.SIMULATION_END :
-            continue
-        // If it's SIMULATION_END, it should break the while on the next iteration I hope 
+        if event.type == EventTypes.SIMULATION_START 
+          schedule(gen_msg_arrival_worker())
+          schedule(gen_msg_arrival_lazy())
+        if event.type == EventTypes.SIMULATION_END :
+            return 
 
         handle_event (event)
 
@@ -64,8 +64,11 @@ class Simulator():
             target_computer.receive_message()
             //  If not busy we schedule a new message 
             if not target_computer.busy:
-                schedule(Event(clock, target_computer._get_start_processing_event_type(), event.message, event.target))
-
+                schedule(Event(clock, target_computer.get_start_processing_event_type(), event.message, event.target))
+            if (EventTypes.WORKER_RECEIVE_EXT_MSG):
+              schedule(gen_msg_arrival_worker())
+            if ( EventTypes.LAZY_RECEIVE_EXT_MSG):
+              schedule(gen_msg_arrival_lazy())
         // Start Proccessing
         elif event.type in (
             EventTypes.WORKER_START_PROCESSING_MSG,
@@ -85,7 +88,9 @@ class Simulator():
         
         elif event.type == EventTypes.MASTER_SEND_MSG:
             target_computer.send_message()
-        
+            Mark exit time on message
+            Pass message to stats collector 
+       
         // Internal arrival of messages 
         elif event.type in (
             EventTypes.WORKER_RECEIVE_INT_MSG,
@@ -95,11 +100,13 @@ class Simulator():
             target_computer.enqueue_message(event.message)
             if target_computer == WORKER_COMPUTER || target_computer == LAZY_COMPUTER
               target_computer.receive_message()
+              mark arrival time on message
             if not target_computer.busy:
                 schedule(Event(clock, target_computer._get_start_processing_event_type(), event.message, event.target))
 
         elif event.type == EventTypes.LAZY_REJECT_MSG:
             computer.reject_message()
+            mark exit time on message
 
     def gen_msg_arrival_worker():
 
