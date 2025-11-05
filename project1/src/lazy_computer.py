@@ -108,3 +108,6 @@ class LazyComputer(Computer):
     def reject_message(self) -> None:
         """Increase the number of messages rejected by the lazy computer."""
         self.rejected_messages += 1
+
+    def get_start_processing_event_type(self) -> EventTypes:
+        return EventTypes.LAZY_START_PROCESSING_MSG

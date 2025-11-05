@@ -71,3 +71,6 @@ class MasterComputer(Computer):
     def send_message(self) -> None:
         """Increase the number of messages sent by the master."""
         self.sent_messages += 1
+
+    def get_start_processing_event_type(self) -> EventTypes:
+        return EventTypes.MASTER_START_PROCESSING_MSG
