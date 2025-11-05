@@ -110,4 +110,7 @@ class LazyComputer(Computer):
         self.rejected_messages += 1
 
     def get_start_processing_event_type(self) -> EventTypes:
+        """
+        Returns the event type that signals this computer is ready to begin processing a message.
+        """
         return EventTypes.LAZY_START_PROCESSING_MSG
