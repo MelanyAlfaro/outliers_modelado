@@ -26,6 +26,7 @@ class Simulator:
         self.max_runs: int = requested_runs
         self.clock: float = 0.0
         self.event_queue: List[Tuple[float, str]] = []
+        # TODO (anyone) : change list for dictionary
         self.computers: List[Computer] = []
         self.speed_mode: SpeedMode = speed_mode
         self.logger: Logger = Logger()
@@ -40,6 +41,7 @@ class Simulator:
         self.master_computer = MasterComputer()
         self.worker_computer = WorkerComputer()
         self.lazy_computer = LazyComputer()
+        # TODO (anyone) : change list for dictionary
         self.computers = [
             None,
             self.master_computer,
@@ -73,6 +75,10 @@ class Simulator:
 
         self.handle_event(event)
 
+        # Verification to mark end of simulations
+        if self.clock >= self.max_time:
+            self.schedule_event(Event(self.clock, EventTypes.SIMULATION_END))
+
     def handle_event(self, event: Event) -> None:
 
         # Specific events
@@ -89,8 +95,10 @@ class Simulator:
             EventTypes.WORKER_RECEIVE_EXT_MSG,
             EventTypes.LAZY_RECEIVE_EXT_MSG,
         ):
+            # The message is always enqueue
             target_computer.enqueue_message(event.message)
             target_computer.receive_message()
+            # If the computer is not busy schedule processing event
             if not target_computer.busy:
                 self.schedule_event(
                     Event(
@@ -120,6 +128,7 @@ class Simulator:
             self.schedule_event(
                 target_computer.determine_message_outcome(self.clock, event.message)
             )
+        # Internal messages
         elif event.type in (
             EventTypes.WORKER_RECEIVE_INT_MSG,
             EventTypes.LAZY_RECEIVE_INT_MSG,
