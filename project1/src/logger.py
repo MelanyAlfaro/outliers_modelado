@@ -41,7 +41,7 @@ class Logger:
         #  --- Event header ---
         print("=" * 70)
         print(f"System clock: {current_time:6.2f} s | Event: {event_type}")
-        print(f"Simulation run: {sim_number} of {max_sim_count}")
+        print(f"Simulation run: {sim_number+1} of {max_sim_count}")
         print("-" * 70)
 
         # --- Message queues ---
