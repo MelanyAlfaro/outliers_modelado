@@ -1,5 +1,4 @@
 from message import Message
-from event import Event
 from event_types import EventTypes
 from computer import Computer
 from computer import WORKER_COMPUTER, LAZY_COMPUTER
@@ -9,6 +8,7 @@ from lazy_computer import LazyComputer
 from speed_mode import SpeedMode
 from event import Event
 from logger import Logger
+from external_arrival_generator import ExternalArrivalGenerator
 
 import heapq
 from typing import List, Tuple
@@ -67,8 +67,8 @@ class Simulator:
         self.clock = event.time
 
         if event.type == EventTypes.SIMULATION_START:
-            self.schedule_event(self.gen_msg_arrival_worker)
-            self.schedule_event(self.gen_msg_arrival_lazy)
+            self.schedule_event(ExternalArrivalGenerator.gen_worker_ext_arrival)
+            self.schedule_event(ExternalArrivalGenerator.gen_lazy_ext_arrival)
             return
         if event.type == EventTypes.SIMULATION_END:
             return
@@ -110,10 +110,10 @@ class Simulator:
                 )
 
                 if EventTypes.WORKER_RECEIVE_EXT_MSG:
-                    self.schedule_event(self.gen_msg_arrival_worker())
+                    self.schedule_event(ExternalArrivalGenerator.gen_worker_ext_arrival)
 
                 elif EventTypes.LAZY_RECEIVE_EXT_MSG:
-                    self.schedule_event(self.gen_msg_arrival_lazy())
+                    self.schedule_event(ExternalArrivalGenerator.gen_lazy_ext_arrival)
         elif event.type in (
             EventTypes.WORKER_START_PROCESSING_MSG,
             EventTypes.LAZY_START_PROCESSING_MSG,
@@ -150,9 +150,3 @@ class Simulator:
                         event.target,
                     )
                 )
-
-    def gen_msg_arrival_worker(self) -> Event:
-        pass
-
-    def gen_msg_arrival_lazy(self) -> Event:
-        pass
