@@ -10,17 +10,17 @@ worker_arrival_rate = 1 / 15  # arrivals per second
 
 class ExternalArrivalGenerator:
     @staticmethod
-    def gen_worker_ext_arrival():
+    def gen_worker_ext_arrival(now: float):
         arrival_time = random.expovariate(worker_arrival_rate)
         return Event(
-            time=arrival_time,
+            time=now + arrival_time,
             type=EventTypes.WORKER_RECEIVE_EXT_MSG,
-            message=None,
+            message=Message(WORKER_COMPUTER, now),
             target=WORKER_COMPUTER,
         )
 
     @staticmethod
-    def gen_lazy_ext_arrival():
+    def gen_lazy_ext_arrival(now: float):
         a, b, c = 2, 4, 10
         x_time = random.random()
         arrival_time = 0.0
@@ -31,8 +31,8 @@ class ExternalArrivalGenerator:
             arrival_time = c - math.sqrt((1 - x_time) * (c - b) * (c - a))
 
         return Event(
-            time=arrival_time,
+            time=now + arrival_time,
             type=EventTypes.LAZY_RECEIVE_EXT_MSG,
-            message=None,
+            message=Message(LAZY_COMPUTER, now),
             target=LAZY_COMPUTER,
         )
