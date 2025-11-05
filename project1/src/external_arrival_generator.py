@@ -8,7 +8,7 @@ import math
 worker_arrival_rate = 1 / 15  # arrivals per second
 
 
-class ArrivalGenerator:
+class ExternalArrivalGenerator:
     @staticmethod
     def gen_worker_ext_arrival():
         arrival_time = random.expovariate(worker_arrival_rate)
