@@ -63,5 +63,9 @@ class Computer(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def get_start_processing_event_type(self) -> EventTypes:
+        raise NotImplementedError
+
+    @abstractmethod
     def determine_message_outcome(self, now: float, message: Message) -> Event:
         raise NotImplementedError

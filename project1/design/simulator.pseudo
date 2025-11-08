@@ -1,0 +1,124 @@
+class Simulator():
+  def init():
+    clock: float
+    sim_count : int
+    max_sim_count: int
+    max_time : float
+    event_queue : [] // (usar import heapq)
+    stats: StatsCollerctor
+    // Vector de computadoras xd 
+    computers [Computer]
+    logger: logger
+    speed_mode() : str 
+
+  def initialize_sim() :
+    clock = 0.0
+    event_queue.empty()
+    master = MasterComputer()
+    worker = WorkerComputer()
+    lazy = LazyComputer()
+    // before: computers = [None, master, worker, lazy]
+    // with a dictionary and think about the new enum:
+    computers = {
+    ComputerID.MASTER: master,
+    ComputerID.WORKER: worker,
+    ComputerID.LAZY: lazy
+    }
+
+    stats = SimulationStats()
+    logger = Logger()
+    schedule(Event(clock, EventTypes.SIMULATION_START))
+  
+  def schedule(event):
+    heapq.heappush(event_list, event)
+  
+  def get_next_event():
+    return heapq.heappop(event_list)
+
+  def run(): 
+    while sim_count < max_sim_count : 
+      initialize_sim()
+      // Somebody please check if this works !!!!
+      while not event_list.is_empty :
+        run_iteration
+      end while
+        handle (Quiere ver las estadísticas para al sim_count iteración)
+    end while
+    print(Quiere ver las estadísticas globales)
+
+  def run_iteration():
+        event = get_next_event()
+        clock = event.time
+
+        if event.type == EventTypes.SIMULATION_START 
+          schedule(gen_msg_arrival_worker())
+          schedule(gen_msg_arrival_lazy())
+        if event.type == EventTypes.SIMULATION_END :
+            return 
+
+        handle_event (event)
+
+        // Verificación de fin de simulación
+        if clock >= max_time:
+            schedule(Event(clock, EventTypes.SIMULATION_END))
+            // On the next iteration the while should be broke? 
+
+  def handle_event(event):
+        target_computer = computers[event.target]
+        // External Arrival 
+        if event.type in (EventTypes.WORKER_RECEIVE_EXT_MSG, EventTypes.LAZY_RECEIVE_EXT_MSG):
+            target_computer.enqueue_message(event.message)
+            target_computer.receive_message()
+            //  If not busy we schedule a new message 
+            if not target_computer.busy:
+                schedule(Event(clock, target_computer.get_start_processing_event_type(), event.message, event.target))
+                mark enqueue time on message 
+            if (EventTypes.WORKER_RECEIVE_EXT_MSG):
+              schedule(gen_msg_arrival_worker())
+            if ( EventTypes.LAZY_RECEIVE_EXT_MSG):
+              schedule(gen_msg_arrival_lazy())
+        // Start Proccessing
+        elif event.type in (
+            EventTypes.WORKER_START_PROCESSING_MSG,
+            EventTypes.LAZY_START_PROCESSING_MSG,
+            EventTypes.MASTER_START_PROCESSING_MSG,
+        ):
+            schedule(target_computer.process_message(clock))
+
+        // End Processing
+        elif event.type in (
+            EventTypes.WORKER_END_PROCESSING_MSG,
+            EventTypes.LAZY_END_PROCESSING_MSG,
+            EventTypes.MASTER_END_PROCESSING_MSG,
+        ):
+            schedule(target_computer.determine_message_outcome(clock, event.message))
+
+        
+        elif event.type == EventTypes.MASTER_SEND_MSG:
+            target_computer.send_message()
+            Mark exit time on message
+            Pass message to stats collector 
+       
+        // Internal arrival of messages 
+        elif event.type in (
+            EventTypes.WORKER_RECEIVE_INT_MSG,
+            EventTypes.LAZY_RECEIVE_INT_MSG,
+            EventTypes.MASTER_RECEIVE_MSG,
+        ):
+            target_computer.enqueue_message(event.message)
+            if target_computer == WORKER_COMPUTER || target_computer == LAZY_COMPUTER
+              target_computer.receive_message()
+              mark arrival time on message
+            if not target_computer.busy:
+                schedule(Event(clock, target_computer._get_start_processing_event_type(), event.message, event.target))
+              mark enqueue time on message 
+        elif event.type == EventTypes.LAZY_REJECT_MSG:
+            computer.reject_message()
+            mark exit time on message
+            pass the message to the stats collector
+
+    def gen_msg_arrival_worker():
+
+    def gen_msg_arrival_lazy():
+
+end

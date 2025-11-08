@@ -2,30 +2,20 @@ import time
 
 from event_types import EventTypes
 from computer import Computer
+from speed_mode import SpeedMode
 
 
 class Logger:
-    """
-    Logger for simulation events.
-
-    Attributes:
-        delay (float): Sleep time
-        max_sim_count (int): Maximum number of simulation iterations.
-    """
-
-    def __init__(self, delay: float, max_sim_count: int) -> None:
-        self.delay: float = delay
-        self.max_sim_count: int = max_sim_count
-
+    @staticmethod
     def log_event(
-        self,
+        max_sim_count: int,
         current_time: float,
         event_type: EventTypes,
         worker_computer: Computer,
         master_computer: Computer,
         lazy_computer: Computer,
         sim_number: int,
-        speed: str = "fast",
+        speed: SpeedMode = SpeedMode.SILENT,
     ) -> None:
         """
         Displays the current state of the system during a simulation event.
@@ -45,13 +35,13 @@ class Logger:
                 - "fast": no delay (default).
                 - "silent": disables output entirely.
         """
-        if speed == "silent":
+        if speed == SpeedMode.SILENT:
             return
 
         #  --- Event header ---
         print("=" * 70)
         print(f"System clock: {current_time:6.2f} s | Event: {event_type}")
-        print(f"Simulation run: {sim_number} of {self.max_sim_count}")
+        print(f"Simulation run: {sim_number+1} of {max_sim_count}")
         print("-" * 70)
 
         # --- Message queues ---
@@ -75,5 +65,4 @@ class Logger:
             f"{master_computer.busy_time + worker_computer.busy_time + lazy_computer.busy_time:.2f} s"
         )
 
-        if speed == "slow":
-            time.sleep(self.delay)
+        time.sleep(speed.delay)

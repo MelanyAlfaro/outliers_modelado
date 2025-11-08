@@ -1,0 +1,55 @@
+CLASS Simulator:
+
+    INIT:
+        initialize simulation parameters
+        prepare event handler mappings
+
+    RUN:
+        FOR each simulation run:
+            reset simulation state
+            schedule SIMULATION_START
+
+            WHILE event queue not empty:
+                process_next_event()
+            end WHILE
+        end FOR
+
+
+    process_next_event:
+        event ← earliest event in queue
+        clock ← event.time
+
+        IF event.type == SIMULATION_START:
+            schedule external arrivals
+            RETURN
+
+        IF event.type == SIMULATION_END:
+            RETURN
+
+        handle_event(event)
+
+        log event
+
+        IF clock >= max_time:
+            schedule SIMULATION_END
+
+
+    handle_event(event):
+        IF event has direct handler:
+            call it
+        ELSE IF event is EXTERNAL_ARRIVAL:
+            enqueue message
+            if target idle: schedule processing
+            schedule next external arrival
+        ELSE IF event is PROCESS_START:
+            process message and schedule outcome
+        ELSE IF event is PROCESS_END:
+            compute outcome and schedule next
+        ELSE IF event is INTERNAL_ARRIVAL:
+            enqueue message
+            if target idle: schedule processing
+        ELSE:
+            error: unknown event
+
+
+    -- event generation is delegated to computers or external arrival generators

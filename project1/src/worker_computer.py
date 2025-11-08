@@ -76,3 +76,9 @@ class WorkerComputer(Computer):
     def receive_message(self) -> None:
         """Increase the number of messages received by the worker computer."""
         self.received_messages += 1
+
+    def get_start_processing_event_type(self) -> EventTypes:
+        """
+        Returns the event type that signals this computer is ready to begin processing a message.
+        """
+        return EventTypes.WORKER_START_PROCESSING_MSG
