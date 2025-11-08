@@ -65,6 +65,7 @@ class WorkerComputer(Computer):
         Returns:
             Event: Event representing the Master computer receiving the message.
         """
+        self.update_busy_time(now)
         self.busy = False
         return Event(
             time=now,

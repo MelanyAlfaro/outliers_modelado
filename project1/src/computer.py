@@ -17,6 +17,7 @@ class Computer(ABC):
         self.end_time: float = 0.0
         self.busy: bool = False
         self.busy_time: float = 0.0
+        self.busy_time_start: float = None
         self.message_queue: deque[Message] = deque()
 
     def enqueue_message(self, message: Message) -> None:
@@ -36,8 +37,9 @@ class Computer(ABC):
         # append() adds messages to the right, so we must popleft for queue behavior
         message = self.message_queue.popleft()
 
-        # Mark self as busy
+        # Mark self as busy and register when the computer started being busy
         self.busy = True
+        self.busy_time_start = now
 
         # Mark new wait time
         message.update_wait_time(service_start_time=now)
@@ -53,6 +55,9 @@ class Computer(ABC):
             target=self.ID,
         )
         return end_processing_event
+    
+    def update_busy_time(self, current_time: float) -> None:
+        self.busy_time += current_time - self.busy_time_start
 
     @abstractmethod
     def generate_processing_time(self) -> float:
