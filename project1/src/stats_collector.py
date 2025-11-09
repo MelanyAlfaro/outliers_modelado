@@ -65,11 +65,12 @@ class StatsCollector:
         avg_in_sys_times.append(total_avg_in_sys_time)
 
         # Efficiency = wait time / in-system time (avoiding division by zero)
-        efficiency_coefficients = [
-            wait_time / in_sys_time
-            for wait_time, in_sys_time in zip(avg_wait_times, avg_in_sys_times)
-            if in_sys_time and in_sys_time > 0
-        ]
+        efficiency_coefficients = []
+        for wait_time, in_sys_time in zip(avg_wait_times, avg_in_sys_times):
+            if in_sys_time and in_sys_time > 0:
+                efficiency_coefficients.append(wait_time / in_sys_time)
+            else:
+                efficiency_coefficients.append(0.0)
 
         return avg_wait_times, avg_in_sys_times, efficiency_coefficients
 
@@ -153,14 +154,14 @@ class StatsCollector:
         - Percentage of time each computer was busy
         - Joint work time and percentage relative to simulation end
         """
-        avg_busy_times = [computer.busy_time for computer in computers]
+        avg_busy_times = [computer.busy_time for computer in computers if computer is not None]
         perc_busy_times = [
-            (computer.busy_time / computer.end_time) if computer.end_time > 0 else 0.0
-            for computer in computers
+            (computer.busy_time / sim_end_time) * 100 if sim_end_time > 0 else 0.0
+            for computer in computers if computer is not None
         ]
 
         perc_joint_work_time = (
-            self.joint_work_time / sim_end_time if sim_end_time > 0.0 else 0.0
+            self.joint_work_time / sim_end_time * 100 if sim_end_time > 0.0 else 0.0
         )
 
         return (
