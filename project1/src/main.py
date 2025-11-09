@@ -4,7 +4,7 @@ import argparse
 import sys
 
 
-def parse_arguments():
+def parse_arguments() -> argparse.Namespace:
     """
     Parse command-line arguments for the simulation.
     """
@@ -40,7 +40,7 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def get_speed_mode(speed_str):
+def get_speed_mode(speed_str) -> SpeedMode:
     """
     Convert speed mode string to SpeedMode enum.
 
@@ -54,7 +54,7 @@ def get_speed_mode(speed_str):
     return speed_map.get(speed_str.lower(), SpeedMode.FAST)
 
 
-def get_interactive_interface():
+def get_interactive_interface() -> tuple[float, int, SpeedMode]:
     """
     Shows an interface for the user to run the program with the input given.
 
@@ -114,7 +114,7 @@ def get_interactive_interface():
     return max_sim_time, requested_runs, speed_mode
 
 
-def run_simulation(max_sim_time, requested_runs, speed_mode):
+def run_simulation(max_sim_time, requested_runs, speed_mode) -> None:
     """
     Run the simulation with the given parameters.
     """
@@ -128,7 +128,7 @@ def run_simulation(max_sim_time, requested_runs, speed_mode):
     print("=" * 60)
 
 
-def start_program():
+def start_program() -> None:
     """
     Shows an interface for the user and runs the program with the input given.
 
