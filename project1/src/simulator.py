@@ -109,13 +109,14 @@ class Simulator:
         """
         Reset simulation state for a new run.
 
-        Reinitializes simulation time, event queue, and computer entities, then
-        schedules the initial SIMULATION_START event.
+        Reinitializes simulation time, event queue, joint work start time and
+        computer entities, then schedules the initial SIMULATION_START event.
         """
         self.clock = 0.0  # reset simulation time
         self.event_queue.clear()  # remove any pending events
         self.computers.clear()  # reset computer container
         self.stats_collector.clear_iteration_records() # clear stats for new run
+        self.joint_work_start_time = -1
 
         # fresh computer instances for this run
         self.master_computer = MasterComputer()
@@ -135,6 +136,19 @@ class Simulator:
         self.schedule_event(Event(self.clock, EventTypes.SIMULATION_START))
         
     def showCollectedStats(self, current_run: int) -> None:
+        """
+        Show the collected statistics to the user.
+        
+        Shows the average wait times, average in system times and efficiency
+        coefficients for all messages that exited the system before the simulation
+        ended. It also shows how much time each computer was busy and for how many
+        time they worked together.
+
+        Parameters
+        ----------
+        current_run : int
+            The number of the current simulation run
+        """
         stats = self.stats_collector.get_final_statistics()
         
         print("\n" + "=" * 60)
@@ -225,7 +239,7 @@ class Simulator:
         Execute the configured number of simulation runs.
 
         Each run resets simulation state, processes events until the queue empties,
-        and then advances to the next run.
+        shows stats for the current run, and then advances to the next run.
         """
 
         while self.total_runs < self.max_runs:
@@ -415,7 +429,8 @@ class Simulator:
         """
         Begin processing the next message on the target computer.
 
-        Delegates processing to the computer and schedules the resulting event.
+        Delegates processing to the computer, defines timestamp por joint time if
+        all computers are working, and schedules the resulting event.
         """
 
         target = self.computers[event.target]  # lookup target computer
@@ -434,8 +449,9 @@ class Simulator:
         """
         Finalize message processing on the target computer.
 
-        Determines the outcome (forwarding, rejection, etc.) and schedules
-        the resulting follow-up event.
+        Determines the outcome (forwarding, rejection, etc.), calculates joint time (if it applies),
+        stores the message for the statistics collector if the message will exit the system,
+        and schedules the resulting follow-up event.
         """
 
         target = self.computers[event.target]  # lookup target computer
