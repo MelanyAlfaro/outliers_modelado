@@ -1,19 +1,63 @@
 from simulator import Simulator
 from speed_mode import SpeedMode
+import argparse
+import sys
 
-def start_program():
+def parse_arguments():
     """
-    Shows an interface for the user and runs the program with the input given.
+    Parse command-line arguments for the simulation.
+    """
+    parser = argparse.ArgumentParser(
+            description="Computer Message System Simulation",
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            epilog="""
+    Examples:
+    python3 main.py --time 60 --runs 5 --speed fast
+    python3 main.py -t 120 -r 10 -s silent
+    python3 main.py (runs in interactive mode)
+            """
+    )
+    
+    parser.add_argument(
+        '-t', '--time',
+        type=float,
+        help='Maximum time for each simulation run in seconds (float)'
+    )
+        
+    parser.add_argument(
+        '-r', '--runs',
+        type=int,
+        help='Number of simulation runs (int)'
+    )
+    
+    parser.add_argument(
+        '-s', '--speed',
+        choices=['slow', 'fast', 'silent'],
+        help='Speed mode: slow, fast, or silent'
+    )
+    
+    return parser.parse_args()
+
+def get_speed_mode(speed_str):
+    """
+    Convert speed mode string to SpeedMode enum.
+    
+    Returns FAST as default value if entered string is not valid.
+    """
+    speed_map = {
+        'slow': SpeedMode.SLOW,
+        'fast': SpeedMode.FAST,
+        'silent': SpeedMode.SILENT
+    }
+    return speed_map.get(speed_str.lower(), SpeedMode.FAST)
+
+def get_interactive_interface():
+    """
+    Shows an interface for the user to run the program with the input given.
     
     Asks the user for the maximum time for each simulation run, the amount of
-    simulation runs and the speed mode for the logger. Then, runs the simulation
-    with the given parameters.
+    simulation runs and the speed mode for the logger.
     """
-    # Show of the program
-    print("\n" + "=" * 60)
-    print(f"COMPUTER MESSAGE SYSTEM SIMULATION")
-    print("=" * 60)
-    
     # Ask the user for the corresponding parameters
     print("Please enter the simulation parameters.")
     
@@ -62,9 +106,13 @@ def start_program():
         except:
             print("Invalid input. Please enter a valid number.")
     
-    # Create and run simulator
+    return max_sim_time, requested_runs, speed_mode
+    
+def run_simulation(max_sim_time, requested_runs, speed_mode):
+    """
+    Run the simulation with the given parameters.
+    """
     print(f"\nStarting simulation with {requested_runs} run(s).")
-    print("=" * 60)
     
     sim = Simulator(max_sim_time, requested_runs, speed_mode)
     sim.run()
@@ -72,6 +120,38 @@ def start_program():
     print("\n" + "=" * 60)
     print("SIMULATION COMPLETED ☺")
     print("=" * 60)
+
+def start_program():
+    """
+    Shows an interface for the user and runs the program with the input given.
+    
+    Asks the user for the maximum time for each simulation run, the amount of
+    simulation runs and the speed mode for the logger. Then, runs the simulation
+    with the given parameters.
+    """
+    # Show of the program
+    print("\n" + "=" * 60)
+    print(f"COMPUTER MESSAGE SYSTEM SIMULATION")
+    print("=" * 60)
+    
+    args = parse_arguments()
+    
+    # Check if all arguments were given via command-line
+    if args.runs is not None and args.time is not None and args.speed is not None:
+        # Run the program with the command-line arguments
+        max_sim_time = args.time
+        requested_runs = args.runs
+        speed_mode = get_speed_mode(args.speed)
+        print(f"Running program with command-line input:")
+        print(f"- Runs: {requested_runs}")
+        print(f"- Max Time: {max_sim_time}s")
+        print(f"- Speed Mode: {args.speed.upper()}")
+        
+    else:
+        # Run the interactive interface
+        max_sim_time, requested_runs, speed_mode = get_interactive_interface()
+        
+    run_simulation(max_sim_time, requested_runs, speed_mode)
 
 if __name__ == "__main__":
     start_program()
