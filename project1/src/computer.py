@@ -14,7 +14,6 @@ LAZY_COMPUTER = 3
 class Computer(ABC):
     def __init__(self, ID: int) -> None:
         self.ID: int = ID
-        self.end_time: float = 0.0
         self.busy: bool = False
         self.busy_time: float = 0.0
         self.busy_time_start: float = None
