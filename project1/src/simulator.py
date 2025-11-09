@@ -460,7 +460,7 @@ class Simulator:
         next_event = target.determine_message_outcome(self.clock, event.message)
         
         # If the 3 computers were working together, update the joint work time
-        if self.joint_work_start_time is not -1:
+        if self.joint_work_start_time != -1:
             joint_work_time = self.clock - self.joint_work_start_time
             self.stats_collector.add_joint_work_time(joint_work_time)
             self.joint_work_start_time = -1
@@ -472,9 +472,3 @@ class Simulator:
         
         # Schedule resulting follow-up event
         self.schedule_event(next_event)
-
-
-# TODO(anyone): remove and create main
-# TODO (anyone): ask user for values
-sim = Simulator(100, 2, SpeedMode.FAST)
-sim.run()
