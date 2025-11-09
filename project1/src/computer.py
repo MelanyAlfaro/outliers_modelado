@@ -16,7 +16,7 @@ class Computer(ABC):
         self.ID: int = ID
         self.busy: bool = False
         self.busy_time: float = 0.0
-        self.busy_time_start: float = None
+        self.busy_time_start: float = 0.0
         self.message_queue: deque[Message] = deque()
 
     def enqueue_message(self, message: Message) -> None:
