@@ -86,6 +86,7 @@ class Simulator:
         self.max_runs = requested_runs  # number of runs requested
         self.total_runs = 0  # number of completed runs
         self.clock = 0.0  # current simulation timestamp
+        self.joint_work_start_time = -1.0  # timestamp for start time of joint work
 
         self.event_queue = []  # min-heap of pending events
         self.computers = []  # computer entities indexed by ID
@@ -421,6 +422,10 @@ class Simulator:
 
         # Process message and obtain follow-up event
         next_event = target.process_message(self.clock)
+        
+        # Mark the start time of joint work if all 3 are working
+        if (self.master_computer.busy and self.worker_computer.busy and self.lazy_computer.busy):
+            self.joint_work_start_time = self.clock
 
         # Schedule event returned by the computer
         self.schedule_event(next_event)
@@ -438,6 +443,12 @@ class Simulator:
         # Evaluate outcome of completed processing
         next_event = target.determine_message_outcome(self.clock, event.message)
         
+        # If the 3 computers were working together, update the joint work time
+        if self.joint_work_start_time is not -1:
+            joint_work_time = self.clock - self.joint_work_start_time
+            self.stats_collector.add_joint_work_time(joint_work_time)
+            self.joint_work_start_time = -1
+        
         # Store processed message in stats collector if it will be sent by the master
         if next_event.type == EventTypes.MASTER_SEND_MSG:
             event.message.mark_departure(self.clock)
@@ -449,5 +460,5 @@ class Simulator:
 
 # TODO(anyone): remove and create main
 # TODO (anyone): ask user for values
-sim = Simulator(20, 2, SpeedMode.FAST)
+sim = Simulator(100, 2, SpeedMode.FAST)
 sim.run()
