@@ -149,6 +149,17 @@ class Simulator:
         current_run : int
             The number of the current simulation run
         """
+        # Ask user if they want to see statistics for this run
+        while True:
+            skip_choice = input(f"\nDo you want to see statistics for Simulation #{self.total_runs + 1}? (y/n): ")
+            if skip_choice.lower() == 'y':
+                break
+            elif skip_choice.lower() == 'n':
+                print(f"Skipping statistics for Simulation #{self.total_runs + 1}")
+                return
+            else:
+                print(f"Invalid input. Please enter 'y' for yes or 'n' for no.")
+        
         stats = self.stats_collector.get_final_statistics()
 
         print("\n" + "=" * 60)
@@ -260,7 +271,15 @@ class Simulator:
             self.stats_collector.record_iteration_statistics(
                 self.computers, self.max_time
             )
+            
+            # Show statistics (ask user) and ask the user to continue
             self.showCollectedStats(self.total_runs)
+            while True:
+                continue_option = input(f"\nPlease enter 'c' to continue with the next run: ")
+                if continue_option.lower() == 'c':
+                    break
+                else:
+                    print(f"Invalid input.")
 
             # Mark run as completed
             self.total_runs += 1
