@@ -162,4 +162,8 @@ def start_program() -> None:
 
 
 if __name__ == "__main__":
-    start_program()
+    try:
+        start_program()
+    except KeyboardInterrupt:
+        print("\n\nSimulation interrupted by user (Ctrl+C).")
+        print("Exiting program...\n")
