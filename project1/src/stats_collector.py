@@ -154,10 +154,13 @@ class StatsCollector:
         - Percentage of time each computer was busy
         - Joint work time and percentage relative to simulation end
         """
-        avg_busy_times = [computer.busy_time for computer in computers if computer is not None]
+        avg_busy_times = [
+            computer.busy_time for computer in computers if computer is not None
+        ]
         perc_busy_times = [
             (computer.busy_time / sim_end_time) * 100 if sim_end_time > 0 else 0.0
-            for computer in computers if computer is not None
+            for computer in computers
+            if computer is not None
         ]
 
         perc_joint_work_time = (

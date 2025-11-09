@@ -54,7 +54,7 @@ class Computer(ABC):
             target=self.ID,
         )
         return end_processing_event
-    
+
     def update_busy_time(self, current_time: float) -> None:
         self.busy_time += current_time - self.busy_time_start
 

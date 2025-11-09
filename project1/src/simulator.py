@@ -93,7 +93,7 @@ class Simulator:
 
         self.speed_mode = speed_mode  # execution pacing config
         self.logger = Logger()  # logs output
-        self.stats_collector = StatsCollector() # stats collector for each run
+        self.stats_collector = StatsCollector()  # stats collector for each run
 
         self.master_computer = MasterComputer()  # system entity
         self.worker_computer = WorkerComputer()
@@ -115,7 +115,7 @@ class Simulator:
         self.clock = 0.0  # reset simulation time
         self.event_queue.clear()  # remove any pending events
         self.computers.clear()  # reset computer container
-        self.stats_collector.clear_iteration_records() # clear stats for new run
+        self.stats_collector.clear_iteration_records()  # clear stats for new run
         self.joint_work_start_time = -1
 
         # fresh computer instances for this run
@@ -134,11 +134,11 @@ class Simulator:
 
         # schedule the first event in the run
         self.schedule_event(Event(self.clock, EventTypes.SIMULATION_START))
-        
+
     def showCollectedStats(self, current_run: int) -> None:
         """
         Show the collected statistics to the user.
-        
+
         Shows the average wait times, average in system times and efficiency
         coefficients for all messages that exited the system before the simulation
         ended. It also shows how much time each computer was busy and for how many
@@ -150,43 +150,48 @@ class Simulator:
             The number of the current simulation run
         """
         stats = self.stats_collector.get_final_statistics()
-        
+
         print("\n" + "=" * 60)
         print(f"STATISTICS COLLECTED FOR SIMULATION #{current_run + 1}")
         print("=" * 60)
-        
+
         # Verify if statistics are available
         if stats is None:
             print("There are no statistics to be shown.")
             return
-        
-        message_titles = ["Rejected messages", "Sent messages from Worker", "Sent messages from Lazy", "All"]
-        
+
+        message_titles = [
+            "Rejected messages",
+            "Sent messages from Worker",
+            "Sent messages from Lazy",
+            "All",
+        ]
+
         avg_wait = stats["avg_msg_wait_times"]
         avg_in_sys = stats["avg_msg_in_sys_times"]
         eff = stats["msg_efficiency_coeffs"]
         busy = stats["avg_comp_busy_times"]
         busy_perc = stats["perc_comp_busy_times"]
         joint = stats["joint_work_time_stats"]
-        
+
         # Average wait times
         print("\nAVERAGE WAIT TIMES")
         print("-" * 50)
         for i in range(len(avg_wait)):
             print(f"- {message_titles[i]}: {avg_wait[i]:.4f}s")
-        
+
         # In sys times
         print("\nAVERAGE IN SYSTEM TIMES")
         print("-" * 50)
         for i in range(len(avg_wait)):
             print(f"- {message_titles[i]}: {avg_in_sys[i]:.4f}s")
-        
+
         # Efficiency coefficients
         print("\nEFFICIENCY COEFFICIENTS")
         print("-" * 50)
         for i in range(len(avg_wait)):
             print(f"- {message_titles[i]}: {eff[i]:.4f}s")
-        
+
         # Busy times/percentages for each computer
         print("\nBUSY TIME FOR EACH COMPUTER")
         print("-" * 50)
@@ -195,13 +200,13 @@ class Simulator:
         print(f"Master   {busy[0]:>11.4f}s  {busy_perc[0]:>11.2f}%")
         print(f"Worker   {busy[1]:>11.4f}s  {busy_perc[1]:>11.2f}%")
         print(f"Lazy     {busy[2]:>11.4f}s  {busy_perc[2]:>11.2f}%")
-        
+
         # Joint work
         print("\nJOINT WORK TIME OF THE 3 COMPUTERS")
         print("-" * 50)
         print(f"- Total joint work time: {joint[0]:.4f}s")
         print(f"- Percentage from total time: {joint[1]:.2f}%")
-        
+
         print("\n" + "=" * 60)
 
     def schedule_event(self, event: Event) -> None:
@@ -250,11 +255,13 @@ class Simulator:
             # Process events in chronological order
             while self.event_queue:
                 self.process_next_event()
-                
+
             # Get stats for the iteration and show them
-            self.stats_collector.record_iteration_statistics(self.computers, self.max_time)
+            self.stats_collector.record_iteration_statistics(
+                self.computers, self.max_time
+            )
             self.showCollectedStats(self.total_runs)
-            
+
             # Mark run as completed
             self.total_runs += 1
 
@@ -437,9 +444,13 @@ class Simulator:
 
         # Process message and obtain follow-up event
         next_event = target.process_message(self.clock)
-        
+
         # Mark the start time of joint work if all 3 are working
-        if (self.master_computer.busy and self.worker_computer.busy and self.lazy_computer.busy):
+        if (
+            self.master_computer.busy
+            and self.worker_computer.busy
+            and self.lazy_computer.busy
+        ):
             self.joint_work_start_time = self.clock
 
         # Schedule event returned by the computer
@@ -458,17 +469,17 @@ class Simulator:
 
         # Evaluate outcome of completed processing
         next_event = target.determine_message_outcome(self.clock, event.message)
-        
+
         # If the 3 computers were working together, update the joint work time
         if self.joint_work_start_time != -1:
             joint_work_time = self.clock - self.joint_work_start_time
             self.stats_collector.add_joint_work_time(joint_work_time)
             self.joint_work_start_time = -1
-        
+
         # Store processed message in stats collector if it will be sent by the master
         if next_event.type == EventTypes.MASTER_SEND_MSG:
             event.message.mark_departure(self.clock)
             self.stats_collector.store_msg(event.message)
-        
+
         # Schedule resulting follow-up event
         self.schedule_event(next_event)
