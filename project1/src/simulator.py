@@ -135,7 +135,7 @@ class Simulator:
         # schedule the first event in the run
         self.schedule_event(Event(self.clock, EventTypes.SIMULATION_START))
 
-    def showCollectedStats(self, current_run: int) -> None:
+    def show_collected_stats(self, current_run: int, show_final_statistics: bool) -> None:
         """
         Show the collected statistics to the user.
 
@@ -148,23 +148,19 @@ class Simulator:
         ----------
         current_run : int
             The number of the current simulation run
+        show_final_statistics: bool
+            Decides if final statistics or current iteration statistics are shown
         """
-        # Ask user if they want to see statistics for this run
-        while True:
-            skip_choice = input(f"\nDo you want to see statistics for Simulation #{self.total_runs + 1}? (y/n): ")
-            if skip_choice.lower() == 'y':
-                break
-            elif skip_choice.lower() == 'n':
-                print(f"Skipping statistics for Simulation #{self.total_runs + 1}")
-                return
-            else:
-                print(f"Invalid input. Please enter 'y' for yes or 'n' for no.")
-        
-        stats = self.stats_collector.get_final_statistics()
-
-        print("\n" + "=" * 60)
-        print(f"STATISTICS COLLECTED FOR SIMULATION #{current_run + 1}")
-        print("=" * 60)
+        if show_final_statistics == False:
+            print("\n" + "=" * 60)
+            print(f"STATISTICS COLLECTED FOR SIMULATION #{current_run + 1}")
+            print("=" * 60)
+            stats = self.stats_collector.get_current_iteration_statistics()
+        else:
+            print("\n" + "=" * 60)
+            print(f"FINAL STATISTICS FOR THE SIMULATION (AVERAGE)")
+            print("=" * 60)
+            stats = self.stats_collector.get_final_statistics()
 
         # Verify if statistics are available
         if stats is None:
@@ -219,6 +215,35 @@ class Simulator:
         print(f"- Percentage from total time: {joint[1]:.2f}%")
 
         print("\n" + "=" * 60)
+        
+    def ask_for_statistics(self, current_run: int) -> None:
+        """
+        Ask the user if statistics for current run should be shown.
+
+        Parameters
+        ----------
+        current_run : int
+            The number of the current simulation run
+        """
+        # Ask user if they want to see statistics for this run
+        while True:
+            skip_choice = input(f"\nDo you want to see statistics for Simulation #{self.total_runs + 1}? (y/n): ")
+            if skip_choice.lower() == 'y':
+                self.show_collected_stats(current_run, False)
+                break
+            elif skip_choice.lower() == 'n':
+                print(f"Skipping statistics for Simulation #{self.total_runs + 1}")
+                return
+            else:
+                print(f"Invalid input. Please enter 'y' for yes or 'n' for no.")
+
+        # Ask user to enter 'c' to continue
+        while True:
+                continue_option = input(f"\nPlease enter 'c' to continue with the next run: ")
+                if continue_option.lower() == 'c':
+                    break
+                else:
+                    print(f"Invalid input.")
 
     def schedule_event(self, event: Event) -> None:
         """
@@ -273,16 +298,14 @@ class Simulator:
             )
             
             # Show statistics (ask user) and ask the user to continue
-            self.showCollectedStats(self.total_runs)
-            while True:
-                continue_option = input(f"\nPlease enter 'c' to continue with the next run: ")
-                if continue_option.lower() == 'c':
-                    break
-                else:
-                    print(f"Invalid input.")
+            self.ask_for_statistics(self.total_runs)
+            
 
             # Mark run as completed
             self.total_runs += 1
+            
+        # Show a summary for the final statistics
+        self.show_collected_stats(self.total_runs, True)
 
     def process_next_event(self) -> None:
         """
