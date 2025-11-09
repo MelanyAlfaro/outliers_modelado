@@ -270,7 +270,7 @@ class Simulator:
         Handle a lazy computer rejecting a message.
         """
         # Delegate rejection logic to the lazy computer
-        self.lazy_computer.reject_message()
+        self.lazy_computer.reject_message(event.message)
 
     def _handle_master_send(self, event: Event) -> None:
         """
@@ -290,6 +290,7 @@ class Simulator:
         target = self.computers[event.target]  # lookup target computer
 
         # Queue incoming message and attempt immediate processing
+        event.message.mark_enqueue_time(self.clock)
         target.enqueue_message(event.message)
         target.receive_message()
 
@@ -326,6 +327,7 @@ class Simulator:
         target = self.computers[event.target]  # lookup target computer
 
         # Queue the incoming internal message
+        event.message.mark_enqueue_time(self.clock)
         target.enqueue_message(event.message)
 
         # Worker/Lazy explicitly receive internal messages
@@ -370,7 +372,11 @@ class Simulator:
 
         # Evaluate outcome of completed processing
         next_event = target.determine_message_outcome(self.clock, event.message)
-
+        
+        # Mark exit time for a message sent by the master computer or rejected by lazy computer
+        if next_event.type in (EventTypes.MASTER_SEND_MSG, EventTypes.LAZY_REJECT_MSG):
+            event.message.mark_departure(self.clock)
+        
         # Schedule resulting follow-up event
         self.schedule_event(next_event)
 
