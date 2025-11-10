@@ -135,7 +135,9 @@ class Simulator:
         # schedule the first event in the run
         self.schedule_event(Event(self.clock, EventTypes.SIMULATION_START))
 
-    def show_collected_stats(self, current_run: int, show_final_statistics: bool) -> None:
+    def show_collected_stats(
+        self, current_run: int, show_final_statistics: bool
+    ) -> None:
         """
         Show the collected statistics to the user.
 
@@ -215,7 +217,7 @@ class Simulator:
         print(f"- Percentage from total time: {joint[1]:.2f}%")
 
         print("\n" + "=" * 60)
-        
+
     def ask_for_statistics(self, current_run: int) -> None:
         """
         Ask the user if statistics for current run should be shown.
@@ -227,11 +229,13 @@ class Simulator:
         """
         # Ask user if they want to see statistics for this run
         while True:
-            skip_choice = input(f"\nDo you want to see statistics for Simulation #{self.total_runs + 1}? (y/n): ")
-            if skip_choice.lower() == 'y':
+            skip_choice = input(
+                f"\nDo you want to see statistics for Simulation #{self.total_runs + 1}? (y/n): "
+            )
+            if skip_choice.lower() == "y":
                 self.show_collected_stats(current_run, False)
                 break
-            elif skip_choice.lower() == 'n':
+            elif skip_choice.lower() == "n":
                 print(f"Skipping statistics for Simulation #{self.total_runs + 1}")
                 return
             else:
@@ -239,11 +243,13 @@ class Simulator:
 
         # Ask user to enter 'c' to continue
         while True:
-                continue_option = input(f"\nPlease enter 'c' to continue with the next run: ")
-                if continue_option.lower() == 'c':
-                    break
-                else:
-                    print(f"Invalid input.")
+            continue_option = input(
+                f"\nPlease enter 'c' to continue with the next run: "
+            )
+            if continue_option.lower() == "c":
+                break
+            else:
+                print(f"Invalid input.")
 
     def schedule_event(self, event: Event) -> None:
         """
@@ -296,14 +302,13 @@ class Simulator:
             self.stats_collector.record_iteration_statistics(
                 self.computers, self.max_time
             )
-            
+
             # Show statistics (ask user) and ask the user to continue
             self.ask_for_statistics(self.total_runs)
-            
 
             # Mark run as completed
             self.total_runs += 1
-            
+
         # Show a summary for the final statistics
         self.show_collected_stats(self.total_runs, True)
 
@@ -346,10 +351,6 @@ class Simulator:
             sim_number=self.total_runs,
             speed=self.speed_mode,
         )
-
-        # If time limit reached, schedule end event
-        if self.clock >= self.max_time:
-            self.schedule_event(Event(self.clock, EventTypes.SIMULATION_END))
 
         # Verification to mark end of simulations
         if self.clock >= self.max_time:
