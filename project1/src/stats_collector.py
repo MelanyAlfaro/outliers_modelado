@@ -115,9 +115,9 @@ class StatsCollector:
             total_count += len(message_list)
 
         total_avg_in_sys_time = (
-            total_in_sys_time / total_count if total_count > 0 else None
+            total_in_sys_time / total_count if total_count > 0 else 0.0
         )
-        total_avg_wait_time = total_wait_time / total_count if total_count > 0 else None
+        total_avg_wait_time = total_wait_time / total_count if total_count > 0 else 0.0
         return total_avg_wait_time, total_avg_in_sys_time
 
     def _get_msgs_avg_wait_time(self) -> Tuple[float, float, float]:
