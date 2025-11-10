@@ -97,6 +97,7 @@ class LazyComputer(Computer):
             target_computer = MASTER_COMPUTER
 
         self.busy = False
+        self.update_busy_time(now)
         return Event(
             time=now, type=outcome_event_type, message=message, target=target_computer
         )
@@ -105,9 +106,10 @@ class LazyComputer(Computer):
         """Increase the number of messages received by the lazy computer."""
         self.received_messages += 1
 
-    def reject_message(self) -> None:
-        """Increase the number of messages rejected by the lazy computer."""
+    def reject_message(self, message: Message) -> None:
+        """Increase the number of messages rejected by the lazy computer and rejects message."""
         self.rejected_messages += 1
+        message.reject()
 
     def get_start_processing_event_type(self) -> EventTypes:
         """

@@ -64,6 +64,7 @@ class MasterComputer(Computer):
             target_computer = LAZY_COMPUTER
 
         self.busy = False
+        self.update_busy_time(now)
         return Event(
             time=now, type=outcome_event_type, message=message, target=target_computer
         )
