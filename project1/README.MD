@@ -108,8 +108,56 @@ The detailed design process, models, and diagrams are documented in the
 ---
 
 ## 📘 User Manual
-> _This section will be completed later._  
-> It will describe the environment required to execute the program and step-by-step instructions for running the simulation.
+
+### Requirements
+- **Python 3.11 or newer**  
+  (The program uses `StrEnum`, which is only available starting in Python 3.11.)
+- Access to a terminal or command prompt  
+- The project directory must contain the `src/` folder with the program files  
+
+(Optional) You may use a virtual environment to manage dependencies.
+
+---
+
+###  How to Run
+
+1. **Open a terminal.**
+
+2. **Navigate to the project’s root folder**  
+   This is the directory where the `src/` folder is located.  
+   Example:
+   ```bash
+   cd project1
+   ```
+
+3. **Execute the main program using Python 3.11+**  
+   A general command format is:
+   ```bash
+   python3 src/main.py
+   ```
+   or, if multiple Python versions are installed:
+   ```bash
+   python3.11 src/main.py
+   ```
+   or
+   ```bash
+   python3.12 src/main.py
+   ```
+   You can also execute the program with command-line arguments, some examples are given with the next command:
+   ```bash
+   python3 src/main --help
+   ```
+
+---
+
+###  Interaction
+
+Once the program starts, it will prompt you to enter the required simulation parameters, such as:
+- Maximum time per run
+- Number of simulation runs
+- Speed mode
+
+Follow the on-screen instructions to continue running the simulation and optionally display statistics after each run.
 
 ---
 
