@@ -310,6 +310,18 @@ class Simulator:
             self.total_runs += 1
 
         # Show a summary for the final statistics
+        while True:
+            skip_choice = input(
+                f"\nDo you want to see the final statistics for the simulation system? (y/n): "
+            )
+            if skip_choice.lower() == "y":
+                self.show_collected_stats(self.total_runs, True)
+                break
+            elif skip_choice.lower() == "n":
+                print(f"Skipping statistics for the simulation system.")
+                return
+            else:
+                print(f"Invalid input. Please enter 'y' for yes or 'n' for no.")
         self.show_collected_stats(self.total_runs, True)
 
     def process_next_event(self) -> None:
