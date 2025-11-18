@@ -201,7 +201,7 @@ class Simulator:
         print("\nEFFICIENCY COEFFICIENTS")
         print("-" * 50)
         for i in range(len(avg_wait)):
-            print(f"- {message_titles[i]}: {eff[i]:.4f}s")
+            print(f"- {message_titles[i]}: {eff[i]:.4f}")
 
         # Busy times/percentages for each computer
         print("\nBUSY TIME FOR EACH COMPUTER")
