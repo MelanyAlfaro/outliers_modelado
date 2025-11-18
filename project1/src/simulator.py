@@ -87,6 +87,7 @@ class Simulator:
         self.total_runs = 0  # number of completed runs
         self.clock = 0.0  # current simulation timestamp
         self.joint_work_start_time = -1.0  # timestamp for start time of joint work
+        self.joint_work_time = 0.0  # counter for joint work time
 
         self.event_queue = []  # min-heap of pending events
         self.computers = []  # computer entities indexed by ID
@@ -117,6 +118,7 @@ class Simulator:
         self.computers.clear()  # reset computer container
         self.stats_collector.clear_iteration_records()  # clear stats for new run
         self.joint_work_start_time = -1
+        self.joint_work_time = 0.0
 
         # fresh computer instances for this run
         self.master_computer = MasterComputer()
@@ -362,6 +364,7 @@ class Simulator:
             lazy_computer=self.lazy_computer,
             sim_number=self.total_runs,
             speed=self.speed_mode,
+            joint_work_time=self.joint_work_time
         )
 
         # Verification to mark end of simulations
@@ -526,9 +529,11 @@ class Simulator:
         next_event = target.determine_message_outcome(self.clock, event.message)
 
         # If the 3 computers were working together, update the joint work time
+        # The time is updated locally and in the stats collector
         if self.joint_work_start_time != -1:
-            joint_work_time = self.clock - self.joint_work_start_time
-            self.stats_collector.add_joint_work_time(joint_work_time)
+            addend_joint_work = (self.clock - self.joint_work_start_time)
+            self.joint_work_time += addend_joint_work
+            self.stats_collector.add_joint_work_time(addend_joint_work)
             self.joint_work_start_time = -1
 
         # Store processed message in stats collector if it will be sent by the master

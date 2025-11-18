@@ -16,6 +16,7 @@ class Logger:
         lazy_computer: Computer,
         sim_number: int,
         speed: SpeedMode = SpeedMode.SILENT,
+        joint_work_time = float
     ) -> None:
         """
         Displays the current state of the system during a simulation event.
@@ -61,8 +62,8 @@ class Logger:
         print(f"Messages received by Lazy (C3): {lazy_computer.received_messages}")
         print(f"Messages rejected by Lazy (C3): {lazy_computer.rejected_messages}")
         print(
-            f"Total processing time (C1 + C2 + C3): "
-            f"{master_computer.busy_time + worker_computer.busy_time + lazy_computer.busy_time:.2f} s"
+            f"Current joint work time (C1, C2, C3): "
+            f"{joint_work_time:.2f} s"
         )
 
         time.sleep(speed.delay)
