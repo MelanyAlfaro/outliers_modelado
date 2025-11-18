@@ -543,3 +543,13 @@ class Simulator:
 
         # Schedule resulting follow-up event
         self.schedule_event(next_event)
+
+        # Computer that ended processing keeps working if its queue is not empty
+        if target.get_enqueued_messages() > 0:
+            self.schedule_event(
+                Event(
+                    self.clock,
+                    type=target.get_start_processing_event_type(),
+                    target=event.target,
+                )
+            )
