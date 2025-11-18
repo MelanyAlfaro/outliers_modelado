@@ -11,6 +11,7 @@ from stats_collector import StatsCollector
 from external_arrival_generator import ExternalArrivalGenerator
 
 import heapq
+import time
 from typing import List, Tuple
 
 """
@@ -288,15 +289,30 @@ class Simulator:
         Each run resets simulation state, processes events until the queue empties,
         shows stats for the current run, and then advances to the next run.
         """
-
+        # Register data of the current simulation in "durations.txt"
+        with open("durations.txt", "a") as f:
+            f.write(f"SIMULATOR DATA: {self.max_time}s - {self.max_runs} runs\n")
+    
+        total_duration = 0.0  # counter for the total duration of the simulator
         while self.total_runs < self.max_runs:
 
             # Reset per-run simulation state
             self.initialize_sim()
 
             # Process events in chronological order
+            # Register time for each run of the simulation
+            start_sim_time = time.time()
             while self.event_queue:
                 self.process_next_event()
+            end_sim_time = time.time()
+
+            # Save duration for the current run and add it to the total time
+            duration = end_sim_time - start_sim_time
+            total_duration += duration
+
+            # Write duration of the current run in file "durations.txt"
+            with open("durations.txt", "a") as f:
+                f.write(f"Iteration: {self.total_runs + 1} - {duration:.4f}s\n")
 
             # Get stats for the iteration and show them
             self.stats_collector.record_iteration_statistics(
@@ -308,6 +324,13 @@ class Simulator:
 
             # Mark run as completed
             self.total_runs += 1
+
+        # Write the total duration of the simulations in file "durations.txt"
+        with open("durations.txt", "a") as f:
+            f.write(f"Total duration: {total_duration:.4f}s\n")
+            f.write(f"=" * 30)
+            f.write(f"\n")
+
 
         # Show a summary for the final statistics
         while True:
