@@ -48,7 +48,7 @@ class ExternalArrivalGenerator:
         return Event(
             time=now + arrival_time,
             type=EventTypes.WORKER_RECEIVE_EXT_MSG,
-            message=Message(WORKER_COMPUTER, now),
+            message=Message(WORKER_COMPUTER, now + arrival_time),
             target=WORKER_COMPUTER,
         )
 
@@ -88,6 +88,6 @@ class ExternalArrivalGenerator:
         return Event(
             time=now + arrival_time,
             type=EventTypes.LAZY_RECEIVE_EXT_MSG,
-            message=Message(LAZY_COMPUTER, now),
+            message=Message(LAZY_COMPUTER, now + arrival_time),
             target=LAZY_COMPUTER,
         )
