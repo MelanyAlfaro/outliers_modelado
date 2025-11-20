@@ -11,6 +11,7 @@ from stats_collector import StatsCollector
 from external_arrival_generator import ExternalArrivalGenerator
 
 import heapq
+import time
 from typing import List, Tuple
 
 """
@@ -116,7 +117,7 @@ class Simulator:
         self.event_queue.clear()  # remove any pending events
         self.computers.clear()  # reset computer container
         self.stats_collector.clear_iteration_records()  # clear stats for new run
-        self.joint_work_start_time = -1
+        self.joint_work_start_time = -1  # reset mark for start of joint work
 
         # fresh computer instances for this run
         self.master_computer = MasterComputer()
@@ -199,7 +200,7 @@ class Simulator:
         print("\nEFFICIENCY COEFFICIENTS")
         print("-" * 50)
         for i in range(len(avg_wait)):
-            print(f"- {message_titles[i]}: {eff[i]:.4f}s")
+            print(f"- {message_titles[i]}: {eff[i]:.4f}")
 
         # Busy times/percentages for each computer
         print("\nBUSY TIME FOR EACH COMPUTER")
@@ -288,15 +289,30 @@ class Simulator:
         Each run resets simulation state, processes events until the queue empties,
         shows stats for the current run, and then advances to the next run.
         """
-
+        # Register data of the current simulation in "durations.txt"
+        with open("durations.txt", "a") as f:
+            f.write(f"SIMULATOR DATA: {self.max_time}s - {self.max_runs} runs\n")
+    
+        total_duration = 0.0  # counter for the total duration of the simulator
         while self.total_runs < self.max_runs:
 
             # Reset per-run simulation state
             self.initialize_sim()
 
             # Process events in chronological order
+            # Register time for each run of the simulation
+            start_sim_time = time.time()
             while self.event_queue:
                 self.process_next_event()
+            end_sim_time = time.time()
+
+            # Save duration for the current run and add it to the total time
+            duration = end_sim_time - start_sim_time
+            total_duration += duration
+
+            # Write duration of the current run in file "durations.txt"
+            with open("durations.txt", "a") as f:
+                f.write(f"Iteration: {self.total_runs + 1} - {duration:.4f}s\n")
 
             # Get stats for the iteration and show them
             self.stats_collector.record_iteration_statistics(
@@ -308,6 +324,13 @@ class Simulator:
 
             # Mark run as completed
             self.total_runs += 1
+
+        # Write the total duration of the simulations in file "durations.txt"
+        with open("durations.txt", "a") as f:
+            f.write(f"Total duration: {total_duration:.4f}s\n")
+            f.write(f"=" * 30)
+            f.write(f"\n")
+
 
         # Show a summary for the final statistics
         while True:
@@ -362,6 +385,7 @@ class Simulator:
             lazy_computer=self.lazy_computer,
             sim_number=self.total_runs,
             speed=self.speed_mode,
+            joint_work_time=self.stats_collector.joint_work_time
         )
 
         # Verification to mark end of simulations
@@ -526,9 +550,10 @@ class Simulator:
         next_event = target.determine_message_outcome(self.clock, event.message)
 
         # If the 3 computers were working together, update the joint work time
+        # The time is updated locally and in the stats collector
         if self.joint_work_start_time != -1:
-            joint_work_time = self.clock - self.joint_work_start_time
-            self.stats_collector.add_joint_work_time(joint_work_time)
+            addend_joint_work = self.clock - self.joint_work_start_time
+            self.stats_collector.add_joint_work_time(addend_joint_work)
             self.joint_work_start_time = -1
 
         # Store processed message in stats collector if it will be sent by the master
@@ -538,3 +563,13 @@ class Simulator:
 
         # Schedule resulting follow-up event
         self.schedule_event(next_event)
+
+        # Computer that ended processing keeps working if its queue is not empty
+        if target.get_enqueued_messages() > 0:
+            self.schedule_event(
+                Event(
+                    self.clock,
+                    type=target.get_start_processing_event_type(),
+                    target=event.target,
+                )
+            )
