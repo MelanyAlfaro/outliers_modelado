@@ -1,9 +1,10 @@
 import random as rd
 
-from computer import Computer, MASTER_COMPUTER, WORKER_COMPUTER
+from computer_id import ComputerID
+from computer import Computer
 from message import Message
 from event import Event
-from event_types import EventTypes
+from event_type import EventType
 
 
 class WorkerComputer(Computer):
@@ -29,7 +30,7 @@ class WorkerComputer(Computer):
         Initialize a WorkerComputer instance with default processing time bounds
         and an empty received_messages counter.
         """
-        super().__init__(ID=WORKER_COMPUTER)
+        super().__init__(ID=ComputerID.WORKER_COMPUTER)
         self.received_messages: int = 0
         self.process_time_min: float = 5.0
         self.process_time_max: float = 10.0
@@ -43,14 +44,14 @@ class WorkerComputer(Computer):
         """
         return rd.uniform(self.process_time_min, self.process_time_max)
 
-    def _get_end_processing_event_type(self) -> EventTypes:
+    def _get_end_processing_event_type(self) -> EventType:
         """
         Get the event type corresponding to the completion of message processing.
 
         Returns:
-            EventTypes: Event type indicating the worker has finished processing a message.
+            EventType: Event type indicating the worker has finished processing a message.
         """
-        return EventTypes.WORKER_END_PROCESSING_MSG
+        return EventType.WORKER_END_PROCESSING_MSG
 
     def determine_message_outcome(self, now: float, message: Message) -> Event:
         """
@@ -69,17 +70,17 @@ class WorkerComputer(Computer):
         self.busy = False
         return Event(
             time=now,
-            type=EventTypes.MASTER_RECEIVE_MSG,
+            type=EventType.MASTER_RECEIVE_MSG,
             message=message,
-            target=MASTER_COMPUTER,
+            target=ComputerID.MASTER_COMPUTER,
         )
 
     def receive_message(self) -> None:
         """Increase the number of messages received by the worker computer."""
         self.received_messages += 1
 
-    def get_start_processing_event_type(self) -> EventTypes:
+    def get_start_processing_event_type(self) -> EventType:
         """
         Returns the event type that signals this computer is ready to begin processing a message.
         """
-        return EventTypes.WORKER_START_PROCESSING_MSG
+        return EventType.WORKER_START_PROCESSING_MSG

@@ -1,6 +1,5 @@
-from event_types import EventTypes
-from computer import Computer
-from computer import WORKER_COMPUTER, LAZY_COMPUTER
+from event_type import EventType
+from computer_id import ComputerID
 from master_computer import MasterComputer
 from worker_computer import WorkerComputer
 from lazy_computer import LazyComputer
@@ -12,7 +11,6 @@ from external_arrival_generator import ExternalArrivalGenerator
 
 import heapq
 import time
-from typing import List, Tuple
 
 """
 Defines the Simulator class, which executes a discrete-event simulation
@@ -28,40 +26,40 @@ events are categorized via class-level sets for fast lookup.
 
 class Simulator:
     """
-    EXTERNAL_ARRIVALS : set[EventTypes]
+    EXTERNAL_ARRIVALS : set[EventType]
         Event types corresponding to arrivals from outside the system.
     """
 
     EXTERNAL_ARRIVALS = {
-        EventTypes.WORKER_RECEIVE_EXT_MSG,
-        EventTypes.LAZY_RECEIVE_EXT_MSG,
+        EventType.WORKER_RECEIVE_EXT_MSG,
+        EventType.LAZY_RECEIVE_EXT_MSG,
     }
     """
-    PROCESS_START : set[EventTypes]
+    PROCESS_START : set[EventType]
         Event types that indicate the start of message processing.
     """
     PROCESS_START = {
-        EventTypes.WORKER_START_PROCESSING_MSG,
-        EventTypes.LAZY_START_PROCESSING_MSG,
-        EventTypes.MASTER_START_PROCESSING_MSG,
+        EventType.WORKER_START_PROCESSING_MSG,
+        EventType.LAZY_START_PROCESSING_MSG,
+        EventType.MASTER_START_PROCESSING_MSG,
     }
     """
-    PROCESS_END : set[EventTypes]
+    PROCESS_END : set[EventType]
         Event types that indicate the completion of message processing.
     """
     PROCESS_END = {
-        EventTypes.WORKER_END_PROCESSING_MSG,
-        EventTypes.LAZY_END_PROCESSING_MSG,
-        EventTypes.MASTER_END_PROCESSING_MSG,
+        EventType.WORKER_END_PROCESSING_MSG,
+        EventType.LAZY_END_PROCESSING_MSG,
+        EventType.MASTER_END_PROCESSING_MSG,
     }
     """
-    INTERNAL_ARRIVALS : set[EventTypes]
+    INTERNAL_ARRIVALS : set[EventType]
         Event types corresponding to internal message transfer.
     """
     INTERNAL_ARRIVALS = {
-        EventTypes.WORKER_RECEIVE_INT_MSG,
-        EventTypes.LAZY_RECEIVE_INT_MSG,
-        EventTypes.MASTER_RECEIVE_MSG,
+        EventType.WORKER_RECEIVE_INT_MSG,
+        EventType.LAZY_RECEIVE_INT_MSG,
+        EventType.MASTER_RECEIVE_MSG,
     }
 
     def __init__(
@@ -102,8 +100,8 @@ class Simulator:
 
         # maps event types → handler functions
         self.specific_event_handlers = {
-            EventTypes.LAZY_REJECT_MSG: self._handle_lazy_reject,
-            EventTypes.MASTER_SEND_MSG: self._handle_master_send,
+            EventType.LAZY_REJECT_MSG: self._handle_lazy_reject,
+            EventType.MASTER_SEND_MSG: self._handle_master_send,
         }
 
     def initialize_sim(self) -> None:
@@ -134,7 +132,7 @@ class Simulator:
         ]
 
         # schedule the first event in the run
-        self.schedule_event(Event(self.clock, EventTypes.SIMULATION_START))
+        self.schedule_event(Event(self.clock, EventType.SIMULATION_START))
 
     def show_collected_stats(
         self, current_run: int, show_final_statistics: bool
@@ -292,7 +290,7 @@ class Simulator:
         # Register data of the current simulation in "durations.txt"
         with open("durations.txt", "a") as f:
             f.write(f"SIMULATOR DATA: {self.max_time}s - {self.max_runs} runs\n")
-    
+
         total_duration = 0.0  # counter for the total duration of the simulator
         while self.total_runs < self.max_runs:
 
@@ -328,9 +326,11 @@ class Simulator:
         # Write the total duration of the simulations in file "durations.txt"
         with open("durations.txt", "a") as f:
             f.write(f"Total duration: {total_duration:.4f}s\n")
+            f.write(
+                f"Average duration per run: {total_duration / self.max_runs:.4f}s\n"
+            )
             f.write(f"=" * 30)
             f.write(f"\n")
-
 
         # Show a summary for the final statistics
         while True:
@@ -345,7 +345,6 @@ class Simulator:
                 return
             else:
                 print(f"Invalid input. Please enter 'y' for yes or 'n' for no.")
-        self.show_collected_stats(self.total_runs, True)
 
     def process_next_event(self) -> None:
         """
@@ -358,7 +357,7 @@ class Simulator:
         self.clock = event.time  # advance simulation time
 
         # Handle first event: schedule external arrivals
-        if event.type == EventTypes.SIMULATION_START:
+        if event.type == EventType.SIMULATION_START:
             self.schedule_event(
                 ExternalArrivalGenerator.gen_worker_ext_arrival(self.clock)
             )
@@ -368,7 +367,7 @@ class Simulator:
             return
 
         # Stop processing if end-of-simulation is reached
-        if event.type == EventTypes.SIMULATION_END:
+        if event.type == EventType.SIMULATION_END:
             # self.event_queue.clear()
             return
 
@@ -385,12 +384,12 @@ class Simulator:
             lazy_computer=self.lazy_computer,
             sim_number=self.total_runs,
             speed=self.speed_mode,
-            joint_work_time=self.stats_collector.joint_work_time
+            joint_work_time=self.stats_collector.joint_work_time,
         )
 
         # Verification to mark end of simulations
         if self.clock >= self.max_time:
-            self.schedule_event(Event(self.clock, EventTypes.SIMULATION_END))
+            self.schedule_event(Event(self.clock, EventType.SIMULATION_END))
 
     def handle_event(self, event: Event) -> None:
         """
@@ -472,7 +471,7 @@ class Simulator:
             )
 
         # Schedule a future external arrival of the same type
-        if event.type == EventTypes.WORKER_RECEIVE_EXT_MSG:
+        if event.type == EventType.WORKER_RECEIVE_EXT_MSG:
             self.schedule_event(
                 ExternalArrivalGenerator.gen_worker_ext_arrival(self.clock)
             )
@@ -497,7 +496,7 @@ class Simulator:
         target.enqueue_message(event.message)
 
         # Worker/Lazy explicitly receive internal messages
-        if target.ID in (WORKER_COMPUTER, LAZY_COMPUTER):
+        if target.ID in (ComputerID.WORKER_COMPUTER, ComputerID.LAZY_COMPUTER):
             target.receive_message()
 
         # If idle, schedule processing start
@@ -557,7 +556,7 @@ class Simulator:
             self.joint_work_start_time = -1
 
         # Store processed message in stats collector if it will be sent by the master
-        if next_event.type == EventTypes.MASTER_SEND_MSG:
+        if next_event.type == EventType.MASTER_SEND_MSG:
             event.message.mark_departure(self.clock)
             self.stats_collector.store_msg(event.message)
 

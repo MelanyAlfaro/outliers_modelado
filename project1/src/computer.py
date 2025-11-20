@@ -3,12 +3,7 @@ from collections import deque
 
 from message import Message
 from event import Event
-from event_types import EventTypes
-
-
-MASTER_COMPUTER = 1
-WORKER_COMPUTER = 2
-LAZY_COMPUTER = 3
+from event_type import EventType
 
 
 class Computer(ABC):
@@ -63,11 +58,11 @@ class Computer(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def _get_end_processing_event_type(self) -> EventTypes:
+    def _get_end_processing_event_type(self) -> EventType:
         raise NotImplementedError
 
     @abstractmethod
-    def get_start_processing_event_type(self) -> EventTypes:
+    def get_start_processing_event_type(self) -> EventType:
         raise NotImplementedError
 
     @abstractmethod
