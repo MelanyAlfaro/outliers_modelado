@@ -1,6 +1,7 @@
 import random as rd
 
-from computer import Computer, MASTER_COMPUTER, WORKER_COMPUTER
+from computer_id import ComputerID
+from computer import Computer
 from message import Message
 from event import Event
 from event_type import EventType
@@ -29,7 +30,7 @@ class WorkerComputer(Computer):
         Initialize a WorkerComputer instance with default processing time bounds
         and an empty received_messages counter.
         """
-        super().__init__(ID=WORKER_COMPUTER)
+        super().__init__(ID=ComputerID.WORKER_COMPUTER)
         self.received_messages: int = 0
         self.process_time_min: float = 5.0
         self.process_time_max: float = 10.0
@@ -71,7 +72,7 @@ class WorkerComputer(Computer):
             time=now,
             type=EventType.MASTER_RECEIVE_MSG,
             message=message,
-            target=MASTER_COMPUTER,
+            target=ComputerID.MASTER_COMPUTER,
         )
 
     def receive_message(self) -> None:

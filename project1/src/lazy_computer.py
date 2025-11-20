@@ -1,6 +1,7 @@
 import random as rd
 
-from computer import Computer, MASTER_COMPUTER, LAZY_COMPUTER
+from computer_id import ComputerID
+from computer import Computer
 from message import Message
 from event import Event
 from event_type import EventType
@@ -29,7 +30,7 @@ class LazyComputer(Computer):
         Initialize a LazyComputer instance with default processing time bounds
         and empty received_messages and rejected_messages counters.
         """
-        super().__init__(ID=LAZY_COMPUTER)
+        super().__init__(ID=ComputerID.LAZY_COMPUTER)
         self.received_messages: int = 0
         self.rejected_messages: int = 0
 
@@ -94,7 +95,7 @@ class LazyComputer(Computer):
             target_computer = None
         else:
             outcome_event_type = EventType.MASTER_RECEIVE_MSG
-            target_computer = MASTER_COMPUTER
+            target_computer = ComputerID.MASTER_COMPUTER
 
         self.busy = False
         self.update_busy_time(now)

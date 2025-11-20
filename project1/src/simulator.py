@@ -1,6 +1,6 @@
 from event_type import EventType
 from computer import Computer
-from computer import WORKER_COMPUTER, LAZY_COMPUTER
+from computer_id import ComputerID
 from master_computer import MasterComputer
 from worker_computer import WorkerComputer
 from lazy_computer import LazyComputer
@@ -499,7 +499,7 @@ class Simulator:
         target.enqueue_message(event.message)
 
         # Worker/Lazy explicitly receive internal messages
-        if target.ID in (WORKER_COMPUTER, LAZY_COMPUTER):
+        if target.ID in (ComputerID.WORKER_COMPUTER, ComputerID.LAZY_COMPUTER):
             target.receive_message()
 
         # If idle, schedule processing start

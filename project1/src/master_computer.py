@@ -1,6 +1,7 @@
 import random as rd
 
-from computer import Computer, MASTER_COMPUTER, WORKER_COMPUTER, LAZY_COMPUTER
+from computer_id import ComputerID
+from computer import Computer
 from message import Message
 from event import Event
 from event_type import EventType
@@ -18,7 +19,7 @@ class MasterComputer(Computer):
     """
 
     def __init__(self) -> None:
-        super().__init__(ID=MASTER_COMPUTER)
+        super().__init__(ID=ComputerID.MASTER_COMPUTER)
         self.sent_messages: int = 0
         self.process_time_mean: float = 3.0
         self.process_time_variance: float = 1.0
@@ -51,17 +52,17 @@ class MasterComputer(Computer):
         message_return_rv = rd.random()
 
         if (
-            message.source == WORKER_COMPUTER
+            message.source == ComputerID.WORKER_COMPUTER
             and message_return_rv <= PROB_RETURN_MSG_FROM_WORKER
         ):
             outcome_event_type = EventType.WORKER_RECEIVE_INT_MSG
-            target_computer = WORKER_COMPUTER
+            target_computer = ComputerID.WORKER_COMPUTER
         elif (
-            message.source == LAZY_COMPUTER
+            message.source == ComputerID.LAZY_COMPUTER
             and message_return_rv <= PROB_RETURN_MSG_FROM_LAZY
         ):
             outcome_event_type = EventType.LAZY_RECEIVE_INT_MSG
-            target_computer = LAZY_COMPUTER
+            target_computer = ComputerID.LAZY_COMPUTER
 
         self.busy = False
         self.update_busy_time(now)

@@ -4,11 +4,7 @@ from collections import deque
 from message import Message
 from event import Event
 from event_type import EventType
-
-
-MASTER_COMPUTER = 1
-WORKER_COMPUTER = 2
-LAZY_COMPUTER = 3
+from computer_id import ComputerID
 
 
 class Computer(ABC):
