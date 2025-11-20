@@ -4,7 +4,6 @@ from collections import deque
 from message import Message
 from event import Event
 from event_type import EventType
-from computer_id import ComputerID
 
 
 class Computer(ABC):
