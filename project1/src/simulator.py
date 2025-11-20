@@ -345,7 +345,6 @@ class Simulator:
                 return
             else:
                 print(f"Invalid input. Please enter 'y' for yes or 'n' for no.")
-        self.show_collected_stats(self.total_runs, True)
 
     def process_next_event(self) -> None:
         """
