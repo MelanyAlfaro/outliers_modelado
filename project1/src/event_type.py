@@ -1,7 +1,7 @@
 from enum import StrEnum
 
 
-class EventTypes(StrEnum):
+class EventType(StrEnum):
     # Simulation
     SIMULATION_START = "simulation_start"
     SIMULATION_END = "simulation_end"

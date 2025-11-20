@@ -1,5 +1,5 @@
 from message import Message
-from event_types import EventTypes
+from event_type import EventType
 from computer import LAZY_COMPUTER, WORKER_COMPUTER
 from event import Event
 import random
@@ -47,7 +47,7 @@ class ExternalArrivalGenerator:
         arrival_time = random.expovariate(worker_arrival_rate)
         return Event(
             time=now + arrival_time,
-            type=EventTypes.WORKER_RECEIVE_EXT_MSG,
+            type=EventType.WORKER_RECEIVE_EXT_MSG,
             message=Message(WORKER_COMPUTER, now + arrival_time),
             target=WORKER_COMPUTER,
         )
@@ -87,7 +87,7 @@ class ExternalArrivalGenerator:
 
         return Event(
             time=now + arrival_time,
-            type=EventTypes.LAZY_RECEIVE_EXT_MSG,
+            type=EventType.LAZY_RECEIVE_EXT_MSG,
             message=Message(LAZY_COMPUTER, now + arrival_time),
             target=LAZY_COMPUTER,
         )

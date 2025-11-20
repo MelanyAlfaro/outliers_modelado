@@ -1,6 +1,6 @@
 import time
 
-from event_types import EventTypes
+from event_type import EventType
 from computer import Computer
 from speed_mode import SpeedMode
 
@@ -10,13 +10,13 @@ class Logger:
     def log_event(
         max_sim_count: int,
         current_time: float,
-        event_type: EventTypes,
+        event_type: EventType,
         worker_computer: Computer,
         master_computer: Computer,
         lazy_computer: Computer,
         sim_number: int,
         speed: SpeedMode = SpeedMode.SILENT,
-        joint_work_time = float
+        joint_work_time=float,
     ) -> None:
         """
         Displays the current state of the system during a simulation event.
@@ -61,9 +61,6 @@ class Logger:
         print(f"Messages received by Worker (C2): {worker_computer.received_messages}")
         print(f"Messages received by Lazy (C3): {lazy_computer.received_messages}")
         print(f"Messages rejected by Lazy (C3): {lazy_computer.rejected_messages}")
-        print(
-            f"Current joint work time (C1, C2, C3): "
-            f"{joint_work_time:.2f} s"
-        )
+        print(f"Current joint work time (C1, C2, C3): " f"{joint_work_time:.2f} s")
 
         time.sleep(speed.delay)

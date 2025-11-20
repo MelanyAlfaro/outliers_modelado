@@ -3,7 +3,7 @@ import random as rd
 from computer import Computer, MASTER_COMPUTER, LAZY_COMPUTER
 from message import Message
 from event import Event
-from event_types import EventTypes
+from event_type import EventType
 
 PROB_REJECT_MSG = 0.75
 
@@ -63,14 +63,14 @@ class LazyComputer(Computer):
             if r2 <= self.processing_time_function(processing_time) / M:
                 return processing_time
 
-    def _get_end_processing_event_type(self) -> EventTypes:
+    def _get_end_processing_event_type(self) -> EventType:
         """
         Get the event type corresponding to the completion of message processing.
 
         Returns:
-            EventTypes: Event type indicating the lazy computer has finished processing a message.
+            EventType: Event type indicating the lazy computer has finished processing a message.
         """
-        return EventTypes.LAZY_END_PROCESSING_MSG
+        return EventType.LAZY_END_PROCESSING_MSG
 
     def determine_message_outcome(self, now: float, message: Message) -> Event:
         """
@@ -90,10 +90,10 @@ class LazyComputer(Computer):
         message_reject_rv = rd.random()
 
         if message_reject_rv <= PROB_REJECT_MSG:
-            outcome_event_type = EventTypes.LAZY_REJECT_MSG
+            outcome_event_type = EventType.LAZY_REJECT_MSG
             target_computer = None
         else:
-            outcome_event_type = EventTypes.MASTER_RECEIVE_MSG
+            outcome_event_type = EventType.MASTER_RECEIVE_MSG
             target_computer = MASTER_COMPUTER
 
         self.busy = False
@@ -111,8 +111,8 @@ class LazyComputer(Computer):
         self.rejected_messages += 1
         message.reject()
 
-    def get_start_processing_event_type(self) -> EventTypes:
+    def get_start_processing_event_type(self) -> EventType:
         """
         Returns the event type that signals this computer is ready to begin processing a message.
         """
-        return EventTypes.LAZY_START_PROCESSING_MSG
+        return EventType.LAZY_START_PROCESSING_MSG

@@ -27,7 +27,7 @@ class Simulator():
 
     stats = SimulationStats()
     logger = Logger()
-    schedule(Event(clock, EventTypes.SIMULATION_START))
+    schedule(Event(clock, EventType.SIMULATION_START))
   
   def schedule(event):
     heapq.heappush(event_list, event)
@@ -50,60 +50,60 @@ class Simulator():
         event = get_next_event()
         clock = event.time
 
-        if event.type == EventTypes.SIMULATION_START 
+        if event.type == EventType.SIMULATION_START 
           schedule(gen_msg_arrival_worker())
           schedule(gen_msg_arrival_lazy())
-        if event.type == EventTypes.SIMULATION_END :
+        if event.type == EventType.SIMULATION_END :
             return 
 
         handle_event (event)
 
         // Verificación de fin de simulación
         if clock >= max_time:
-            schedule(Event(clock, EventTypes.SIMULATION_END))
+            schedule(Event(clock, EventType.SIMULATION_END))
             // On the next iteration the while should be broke? 
 
   def handle_event(event):
         target_computer = computers[event.target]
         // External Arrival 
-        if event.type in (EventTypes.WORKER_RECEIVE_EXT_MSG, EventTypes.LAZY_RECEIVE_EXT_MSG):
+        if event.type in (EventType.WORKER_RECEIVE_EXT_MSG, EventType.LAZY_RECEIVE_EXT_MSG):
             target_computer.enqueue_message(event.message)
             target_computer.receive_message()
             //  If not busy we schedule a new message 
             if not target_computer.busy:
                 schedule(Event(clock, target_computer.get_start_processing_event_type(), event.message, event.target))
                 mark enqueue time on message 
-            if (EventTypes.WORKER_RECEIVE_EXT_MSG):
+            if (EventType.WORKER_RECEIVE_EXT_MSG):
               schedule(gen_msg_arrival_worker())
-            if ( EventTypes.LAZY_RECEIVE_EXT_MSG):
+            if ( EventType.LAZY_RECEIVE_EXT_MSG):
               schedule(gen_msg_arrival_lazy())
         // Start Proccessing
         elif event.type in (
-            EventTypes.WORKER_START_PROCESSING_MSG,
-            EventTypes.LAZY_START_PROCESSING_MSG,
-            EventTypes.MASTER_START_PROCESSING_MSG,
+            EventType.WORKER_START_PROCESSING_MSG,
+            EventType.LAZY_START_PROCESSING_MSG,
+            EventType.MASTER_START_PROCESSING_MSG,
         ):
             schedule(target_computer.process_message(clock))
 
         // End Processing
         elif event.type in (
-            EventTypes.WORKER_END_PROCESSING_MSG,
-            EventTypes.LAZY_END_PROCESSING_MSG,
-            EventTypes.MASTER_END_PROCESSING_MSG,
+            EventType.WORKER_END_PROCESSING_MSG,
+            EventType.LAZY_END_PROCESSING_MSG,
+            EventType.MASTER_END_PROCESSING_MSG,
         ):
             schedule(target_computer.determine_message_outcome(clock, event.message))
 
         
-        elif event.type == EventTypes.MASTER_SEND_MSG:
+        elif event.type == EventType.MASTER_SEND_MSG:
             target_computer.send_message()
             Mark exit time on message
             Pass message to stats collector 
        
         // Internal arrival of messages 
         elif event.type in (
-            EventTypes.WORKER_RECEIVE_INT_MSG,
-            EventTypes.LAZY_RECEIVE_INT_MSG,
-            EventTypes.MASTER_RECEIVE_MSG,
+            EventType.WORKER_RECEIVE_INT_MSG,
+            EventType.LAZY_RECEIVE_INT_MSG,
+            EventType.MASTER_RECEIVE_MSG,
         ):
             target_computer.enqueue_message(event.message)
             if target_computer == WORKER_COMPUTER || target_computer == LAZY_COMPUTER
@@ -112,7 +112,7 @@ class Simulator():
             if not target_computer.busy:
                 schedule(Event(clock, target_computer._get_start_processing_event_type(), event.message, event.target))
               mark enqueue time on message 
-        elif event.type == EventTypes.LAZY_REJECT_MSG:
+        elif event.type == EventType.LAZY_REJECT_MSG:
             computer.reject_message()
             mark exit time on message
             pass the message to the stats collector
