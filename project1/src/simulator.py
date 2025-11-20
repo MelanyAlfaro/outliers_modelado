@@ -292,7 +292,7 @@ class Simulator:
         # Register data of the current simulation in "durations.txt"
         with open("durations.txt", "a") as f:
             f.write(f"SIMULATOR DATA: {self.max_time}s - {self.max_runs} runs\n")
-    
+
         total_duration = 0.0  # counter for the total duration of the simulator
         while self.total_runs < self.max_runs:
 
@@ -328,9 +328,11 @@ class Simulator:
         # Write the total duration of the simulations in file "durations.txt"
         with open("durations.txt", "a") as f:
             f.write(f"Total duration: {total_duration:.4f}s\n")
+            f.write(
+                f"Average duration per run: {total_duration / self.max_runs:.4f}s\n"
+            )
             f.write(f"=" * 30)
             f.write(f"\n")
-
 
         # Show a summary for the final statistics
         while True:
@@ -385,7 +387,7 @@ class Simulator:
             lazy_computer=self.lazy_computer,
             sim_number=self.total_runs,
             speed=self.speed_mode,
-            joint_work_time=self.stats_collector.joint_work_time
+            joint_work_time=self.stats_collector.joint_work_time,
         )
 
         # Verification to mark end of simulations
