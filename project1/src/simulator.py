@@ -1,5 +1,4 @@
 from event_type import EventType
-from computer import Computer
 from computer_id import ComputerID
 from master_computer import MasterComputer
 from worker_computer import WorkerComputer
@@ -12,7 +11,6 @@ from external_arrival_generator import ExternalArrivalGenerator
 
 import heapq
 import time
-from typing import List, Tuple
 
 """
 Defines the Simulator class, which executes a discrete-event simulation
