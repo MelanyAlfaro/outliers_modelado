@@ -1,6 +1,6 @@
 from message import Message
-from event_types import EventTypes
-from computer import LAZY_COMPUTER, WORKER_COMPUTER
+from event_type import EventType
+from computer_id import ComputerID
 from event import Event
 import random
 import math
@@ -40,16 +40,16 @@ class ExternalArrivalGenerator:
         -------
         Event
             An event scheduled at (now + interarrival_time), containing:
-            - type   : WORKER_RECEIVE_EXT_MSG
-            - target : WORKER_COMPUTER
+            - type   : EventType.WORKER_RECEIVE_EXT_MSG
+            - target : ComputerID.WORKER_COMPUTER
             - message: Message destined for the worker
         """
         arrival_time = random.expovariate(worker_arrival_rate)
         return Event(
             time=now + arrival_time,
-            type=EventTypes.WORKER_RECEIVE_EXT_MSG,
-            message=Message(WORKER_COMPUTER, now + arrival_time),
-            target=WORKER_COMPUTER,
+            type=EventType.WORKER_RECEIVE_EXT_MSG,
+            message=Message(ComputerID.WORKER_COMPUTER, now + arrival_time),
+            target=ComputerID.WORKER_COMPUTER,
         )
 
     @staticmethod
@@ -72,8 +72,8 @@ class ExternalArrivalGenerator:
         -------
         Event
             An event scheduled at (now + interarrival_time), containing:
-            - type   : LAZY_RECEIVE_EXT_MSG
-            - target : LAZY_COMPUTER
+            - type   : EventType.LAZY_RECEIVE_EXT_MSG
+            - target : ComputerID.LAZY_COMPUTER
             - message: Message destined for the lazy node
         """
         a, b, c = 2, 4, 10
@@ -87,7 +87,7 @@ class ExternalArrivalGenerator:
 
         return Event(
             time=now + arrival_time,
-            type=EventTypes.LAZY_RECEIVE_EXT_MSG,
-            message=Message(LAZY_COMPUTER, now + arrival_time),
-            target=LAZY_COMPUTER,
+            type=EventType.LAZY_RECEIVE_EXT_MSG,
+            message=Message(ComputerID.LAZY_COMPUTER, now + arrival_time),
+            target=ComputerID.LAZY_COMPUTER,
         )

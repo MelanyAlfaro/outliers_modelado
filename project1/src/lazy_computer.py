@@ -1,9 +1,10 @@
 import random as rd
 
-from computer import Computer, MASTER_COMPUTER, LAZY_COMPUTER
+from computer_id import ComputerID
+from computer import Computer
 from message import Message
 from event import Event
-from event_types import EventTypes
+from event_type import EventType
 
 PROB_REJECT_MSG = 0.75
 
@@ -29,7 +30,7 @@ class LazyComputer(Computer):
         Initialize a LazyComputer instance with default processing time bounds
         and empty received_messages and rejected_messages counters.
         """
-        super().__init__(ID=LAZY_COMPUTER)
+        super().__init__(ID=ComputerID.LAZY_COMPUTER)
         self.received_messages: int = 0
         self.rejected_messages: int = 0
 
@@ -63,14 +64,14 @@ class LazyComputer(Computer):
             if r2 <= self.processing_time_function(processing_time) / M:
                 return processing_time
 
-    def _get_end_processing_event_type(self) -> EventTypes:
+    def _get_end_processing_event_type(self) -> EventType:
         """
         Get the event type corresponding to the completion of message processing.
 
         Returns:
-            EventTypes: Event type indicating the lazy computer has finished processing a message.
+            EventType: Event type indicating the lazy computer has finished processing a message.
         """
-        return EventTypes.LAZY_END_PROCESSING_MSG
+        return EventType.LAZY_END_PROCESSING_MSG
 
     def determine_message_outcome(self, now: float, message: Message) -> Event:
         """
@@ -90,11 +91,11 @@ class LazyComputer(Computer):
         message_reject_rv = rd.random()
 
         if message_reject_rv <= PROB_REJECT_MSG:
-            outcome_event_type = EventTypes.LAZY_REJECT_MSG
+            outcome_event_type = EventType.LAZY_REJECT_MSG
             target_computer = None
         else:
-            outcome_event_type = EventTypes.MASTER_RECEIVE_MSG
-            target_computer = MASTER_COMPUTER
+            outcome_event_type = EventType.MASTER_RECEIVE_MSG
+            target_computer = ComputerID.MASTER_COMPUTER
 
         self.busy = False
         self.update_busy_time(now)
@@ -111,8 +112,8 @@ class LazyComputer(Computer):
         self.rejected_messages += 1
         message.reject()
 
-    def get_start_processing_event_type(self) -> EventTypes:
+    def get_start_processing_event_type(self) -> EventType:
         """
         Returns the event type that signals this computer is ready to begin processing a message.
         """
-        return EventTypes.LAZY_START_PROCESSING_MSG
+        return EventType.LAZY_START_PROCESSING_MSG

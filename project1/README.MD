@@ -87,7 +87,7 @@ Additionally, system performance is measured by the **average execution time** o
 project_root/
 ├── src/                    # Source code
 |   └── computer.py
-|   └── event_types.py
+|   └── event_type.py
 |   └── master_computer.py
 |   └── message.py
 |   └── worker_computer.py

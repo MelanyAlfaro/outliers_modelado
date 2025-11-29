@@ -1,7 +1,6 @@
 from simulator import Simulator
 from speed_mode import SpeedMode
 import argparse
-import sys
 
 
 def parse_arguments() -> argparse.Namespace:

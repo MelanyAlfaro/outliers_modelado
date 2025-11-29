@@ -3,7 +3,8 @@ from typing import Tuple
 from statistics import mean
 
 from message import Message
-from computer import Computer, WORKER_COMPUTER, LAZY_COMPUTER
+from computer_id import ComputerID
+from computer import Computer
 from message_type import MessageType
 
 
@@ -39,9 +40,9 @@ class StatsCollector:
         """
         if message.rejected:
             message_type = MessageType.REJECTED_MSG
-        elif message.source == WORKER_COMPUTER:
+        elif message.source == ComputerID.WORKER_COMPUTER:
             message_type = MessageType.SENT_MSG_FROM_WORKER
-        elif message.source == LAZY_COMPUTER:
+        elif message.source == ComputerID.LAZY_COMPUTER:
             message_type = MessageType.SENT_MSG_FROM_LAZY
         else:
             # Safety check: message doesn't match known types
@@ -154,10 +155,8 @@ class StatsCollector:
         - Percentage of time each computer was busy
         - Joint work time and percentage relative to simulation end
         """
-        computers = computers[1:]  # Skip index 0 (None)        
-        avg_busy_times = [
-            computer.busy_time for computer in computers
-        ]
+        computers = computers[1:]  # Skip index 0 (None)
+        avg_busy_times = [computer.busy_time for computer in computers]
         perc_busy_times = [
             (computer.busy_time / sim_end_time) * 100 if sim_end_time > 0 else 0.0
             for computer in computers
