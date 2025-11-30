@@ -6,7 +6,7 @@ from collections import deque
 SEED = 42
 random.seed(SEED)
 
-# Flag for verbose output (for debug)
+# Flag for verbose output
 VERBOSE = False
 
 
@@ -30,7 +30,7 @@ def simulate(
     operators_busy = [False] * operators_count  # track if each operator is busy
     total_operator_busy_times = [0.0] * operators_count  # total busy time per operator
 
-    arrival_time = random.expovariate(arrival_rate)
+    next_arrival_time = random.expovariate(arrival_rate)
     # heap entries: (completion_time, operator_index, start_time, arrival_time_of_customer)
     service_completion_times: list[tuple] = []
 
@@ -41,25 +41,25 @@ def simulate(
             service_completion_times[0][0] if service_completion_times else float("inf")
         )
         # Pick next event time, either arrival or completion
-        next_event_time = min(arrival_time, next_completion)
+        next_event_time = min(next_arrival_time, next_completion)
 
         if next_event_time > sim_time:
             # No more events within simulation horizon
             break
 
         # Determine which event occurs
-        if arrival_time <= next_completion:
+        if next_arrival_time <= next_completion:
             # Arrival event
             if len(customer_queue) == 0 and len(service_completion_times) == 0:
                 # System was empty: add idle time since current_time
-                system_empty_time += arrival_time - current_time
+                system_empty_time += next_arrival_time - current_time
 
-            current_time = arrival_time  # Update current time to arrival time
+            current_time = next_arrival_time  # Update current time to arrival time
             total_customers += 1
 
             # If there is space in queue (waiting room), join; else lost
             if len(customer_queue) < queue_capacity:
-                customer_queue.append(arrival_time)
+                customer_queue.append(next_arrival_time)
                 if VERBOSE:
                     print("Customer arrived at time {:.2f}".format(current_time))
             else:
@@ -72,7 +72,7 @@ def simulate(
                     )
 
             # Generate next arrival
-            arrival_time = current_time + random.expovariate(arrival_rate)
+            next_arrival_time = current_time + random.expovariate(arrival_rate)
 
         else:
             # Service completion event, popped from heap
@@ -119,7 +119,7 @@ def simulate(
                     print(f"Operator {index} started service at time {start_time:.2f}")
 
     # AFTER SIMULATION, FINALIZE METRICS
-    # Account for remaining idle time if system empty
+    # ccount for remaining idle time if system empty
     if not service_completion_times and not customer_queue and not any(operators_busy):
         system_empty_time += sim_time - current_time
 
