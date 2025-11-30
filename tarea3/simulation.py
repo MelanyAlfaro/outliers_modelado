@@ -17,6 +17,16 @@ def simulate(
     service_rate: float,  # MU
     queue_capacity: int,
 ) -> dict[str, object]:
+    """
+    Runs a simulation of the system described in the homework description.
+
+    Returns a dictionary with the following metrics:
+        - sys_empty_proportion: Proportion of time the system was empty
+        - lost_customers_proportion: Proportion of customers lost due to full queue
+        - avg_wait_time: Average wait time in queue
+        - avg_system_time: Average time in system (wait + service)
+        - operator_utilizations: List of utilizations for each operator
+    """
     current_time = 0.0  # in minutes
     system_empty_time = 0.0  # total time system was empty
     sum_wait_times = 0.0  # total wait time in queue
@@ -152,31 +162,34 @@ def simulate(
     }
 
 
-def run_original_system():
+def run_original_system() -> None:
+    """Runs simulation with original parameters"""
     results = simulate(
         sim_time=480,  # total simulation time in minutes (8 hours)
         operators_count=2,  # number of service operators
-        arrival_rate=1 / 3.0,  # average of 1 arrival every 3 minutes
-        service_rate=1 / 6.0,  # average service time of 6 minutes
+        arrival_rate=1 / 3.0,  # average of 1 arrival every 3 minutes (20 per hour)
+        service_rate=1 / 6.0,  # average service time of 6 minutes (10 per hour)
         queue_capacity=10,  # maximum number of customers in queue
     )
     print("[Original System]")
     display_results(results)
 
 
-def run_increased_operators_system():
+def run_increased_operators_system() -> None:
+    """Runs simulation with increased number of operators (1 more than original)."""
     results = simulate(
         sim_time=480,  # total simulation time in minutes (8 hours)
         operators_count=3,  # increased number of service operators
-        arrival_rate=1 / 3.0,  # average of 1 arrival every 3 minutes
-        service_rate=1 / 6.0,  # average service time of 6 minutes
+        arrival_rate=1 / 3.0,  # average of 1 arrival every 3 minutes (20 per hour)
+        service_rate=1 / 6.0,  # average service time of 6 minutes (10 per hour)
         queue_capacity=10,  # maximum number of customers in queue
     )
     print("[Increased Operators System]")
     display_results(results)
 
 
-def run_reduced_arrival_rate_system():
+def run_reduced_arrival_rate_system() -> None:
+    """Runs simulation with reduced arrival rate (1 every 4 minutes)."""
     results = simulate(
         sim_time=480,  # total simulation time in minutes (8 hours)
         operators_count=2,  # number of service operators
@@ -188,7 +201,8 @@ def run_reduced_arrival_rate_system():
     display_results(results)
 
 
-def display_results(results: dict[str, object]):
+def display_results(results: dict[str, object]) -> None:
+    """Displays simulation results in a formatted manner."""
     print("Simulation Results:")
     print(f"Proportion of time system was empty: {results['sys_empty_proportion']:.4f}")
     print(f"Proportion of lost customers: {results['lost_customers_proportion']:.4f}")
