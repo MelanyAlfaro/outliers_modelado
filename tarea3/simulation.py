@@ -130,7 +130,7 @@ def simulate(
                     print(f"Operator {index} started service at time {start_time:.2f}")
 
     # AFTER SIMULATION, FINALIZE METRICS
-    # ccount for remaining idle time if system empty
+    # Account for remaining idle time if system empty
     if not service_completion_times and not customer_queue and not any(operators_busy):
         system_empty_time += sim_time - current_time
 
