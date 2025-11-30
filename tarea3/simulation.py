@@ -168,6 +168,10 @@ def simulate(
         "operator_utilizations": [
             busy_time / sim_time for busy_time in total_operator_busy_times
         ],
+        "total_customers": total_customers,
+        "lost_customers": lost_customers,
+        "serviced_customers": serviced_customers,
+        "customers_in_queue_end": len(customer_queue),
     }
 
 
@@ -226,6 +230,10 @@ def display_results(results: dict[str, object]) -> None:
     print(f"Average time in system: {results['avg_system_time']:.2f} minutes")
     for i, utilization in enumerate(results["operator_utilizations"]):
         print(f"Utilization of operator {i + 1}: {utilization*100:.4f}%")
+    print(f"Total customers arrived: {results['total_customers']}")
+    print(f"Total customers lost: {results['lost_customers']}")
+    print(f"Total customers serviced: {results['serviced_customers']}")
+    print(f"Customers remaining in queue at end: {results['customers_in_queue_end']}")
     print("================================================")
 
 
