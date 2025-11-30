@@ -4,7 +4,6 @@ from collections import deque
 
 # For replication
 SEED = 42
-random.seed(SEED)
 
 # Flag for verbose output
 VERBOSE = False
@@ -27,6 +26,8 @@ def simulate(
         - avg_system_time: Average time in system (wait + service)
         - operator_utilizations: List of utilizations for each operator
     """
+    random.seed(SEED)
+
     current_time = 0.0  # in minutes
     system_empty_time = 0.0  # total time system was empty
     sum_wait_times = 0.0  # total wait time in queue
