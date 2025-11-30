@@ -112,6 +112,12 @@ def simulate(
             sum_system_times += wait_time + service_duration
             serviced_customers += 1
 
+            if VERBOSE:
+                print(
+                    f"Customer served who arrived at {arrival_time:.2f}, "
+                    f"waited {wait_time:.2f}, total in system {wait_time + service_duration:.2f}"
+                )
+
         # After processing an event, assign as many queued customers as possible
         for index in range(operators_count):
             if (not operators_busy[index]) and len(customer_queue) > 0:
@@ -127,7 +133,9 @@ def simulate(
                 )
                 operators_busy[index] = True
                 if VERBOSE:
-                    print(f"Operator {index} started service at time {start_time:.2f}")
+                    print(
+                        f"Operator {index} started service at time {start_time:.2f}, customers in queue {len(customer_queue)}"
+                    )
 
     # AFTER SIMULATION, FINALIZE METRICS
     # Account for remaining idle time if system empty
@@ -217,7 +225,7 @@ def display_results(results: dict[str, object]) -> None:
     print(f"Average wait time in queue: {results['avg_wait_time']:.2f} minutes")
     print(f"Average time in system: {results['avg_system_time']:.2f} minutes")
     for i, utilization in enumerate(results["operator_utilizations"]):
-        print(f"Utilization of operator {i + 1}: {utilization:.4f}")
+        print(f"Utilization of operator {i + 1}: {utilization*100:.4f}%")
     print("================================================")
 
 
