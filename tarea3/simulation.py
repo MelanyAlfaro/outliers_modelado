@@ -196,7 +196,7 @@ def run_reduced_arrival_rate_system() -> None:
         operators_count=2,  # number of service operators
         arrival_rate=1 / 4.0,  # average of 1 arrival every 4 minutes (15 per hour)
         service_rate=1 / 6.0,  # average service time of 6 minutes (10 per hour)
-        queue_capacity=10,  # increased maximum number of customers in queue
+        queue_capacity=10,  # maximum number of customers in queue
     )
     print("[Reduced Arrival Rate System]")
     display_results(results)
